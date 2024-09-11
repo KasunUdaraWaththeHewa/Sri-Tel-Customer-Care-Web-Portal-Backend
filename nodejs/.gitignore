@@ -1,0 +1,10 @@
+node_modules
+.env
+dist
+pnpm-store
+pnpm
+.idea/
+.vscode/
+tmp
+temp
+postgres-data

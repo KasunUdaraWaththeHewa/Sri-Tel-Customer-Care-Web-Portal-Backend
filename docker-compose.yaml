@@ -1,0 +1,86 @@
+services:
+  kafka:
+    container_name: st_kafka
+    hostname: kafka
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER: PLAINTEXT://:9092
+
+      KAFKA_CREATE_TOPICS: "test:1:1"
+    depends_on:
+      - zookeeper
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+    networks:
+      - st_sritel-network
+
+  zookeeper:
+    container_name: st_zookeeper
+    hostname: zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+    networks:
+      - st_sritel-network
+
+  nodejs:
+    hostname: backend
+    container_name: st_backend
+    build: 
+      context: ./nodejs/
+      dockerfile: ./pnpm.Dockerfile
+    restart: always
+    ports:
+      - 4901:4901
+    volumes:
+      - ./nodejs:/app
+    working_dir: /app
+
+    environment:
+      - PORT=4901
+
+    # command: ["pnpm", "i" ]
+    entrypoint: ["pnpm", "dev"]
+    networks:
+      - st_sritel-network  
+
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: nodejs-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nodejs
+    ports:
+      - 4931:5432
+    volumes:
+      - ./postgres-data:/var/lib/postgresql@16/data
+    networks:
+      - st_sritel-network
+
+
+networks:
+  st_sritel-network:
+    driver: bridge
