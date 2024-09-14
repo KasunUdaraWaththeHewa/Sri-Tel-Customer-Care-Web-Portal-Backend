@@ -1,13 +1,13 @@
 import express,{ Express , Request, Response} from "express";
 import cors from "cors";
-import UserRoutes from './routes/User';
-import messageRoutes from "./routes/message";
+import consumeMessages from "./services/notification";
+
 // import bodyParser from 'body-parser';
 
 // env
 require('dotenv').config();
 
-const PORT = process.env.PORT || 4901;
+const PORT = process.env.PORT || 4902;
 
 const app: Express = express();
 app.use(express.json());
@@ -22,8 +22,5 @@ app.listen(PORT, () => {
     
 });
 
+consumeMessages().catch(console.error);
 
-
-
-app.use('/api/user',UserRoutes)
-app.use('/api/message',messageRoutes)
