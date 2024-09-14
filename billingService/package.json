@@ -1,7 +1,7 @@
 {
-    "name": "sricare",
+    "name": "sritel",
     "version": "1.0.0",
-    "description": "SriCare BillingService",
+    "description": "SriTel BillingService",
     "main": "server.js",
     "scripts": {
         "start": "node server.js",
@@ -20,6 +20,7 @@
         "nodemailer": "^6.9.5",
         "nodemon": "^3.0.1",
         "sricare": "file:",
+        "sritel": "file:",
         "validator": "^13.11.0"
     }
 }
