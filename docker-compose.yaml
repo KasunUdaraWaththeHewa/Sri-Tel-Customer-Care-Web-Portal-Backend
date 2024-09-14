@@ -64,10 +64,31 @@ services:
     networks:
       - st_sritel-network  
 
+  notification:
+    hostname: notification
+    container_name: st_notification
+    build: 
+      context: ./notification/
+      dockerfile: ./pnpm.Dockerfile
+    restart: always
+    ports:
+      - 4902:4902
+    volumes:
+      - ./notification:/app
+    working_dir: /app
+    environment:
+      - PORT=4902
 
-  postgres:
+    entrypoint: ["pnpm", "dev"]
+    networks:
+      - st_sritel-network
+
+
+
+  postgres-1:
     image: postgres:16-alpine
-    container_name: nodejs-postgres
+    container_name: postgres-1
+    hostname: postgres-1
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -79,6 +100,30 @@ services:
       - ./postgres-data:/var/lib/postgresql@16/data
     networks:
       - st_sritel-network
+
+  mongodb-1:
+    container_name: mongodb-1
+    hostname: mongodb-1
+    image: mongo:latest
+    ports:
+      - "4941:27017"
+    networks:
+      - st_sritel-network
+
+
+
+
+# Mail Service
+  mail:
+    container_name: st_mail
+    hostname: mail
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks:
+      - st_sritel-network
+
 
 
 networks:
