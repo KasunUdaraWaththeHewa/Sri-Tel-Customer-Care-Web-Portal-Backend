@@ -142,46 +142,37 @@ services:
     networks:
       - st_sritel-network
 
-
-
-  postgres-1:
-    image: postgres:16-alpine
-    container_name: st_postgres-1
-    hostname: postgres-1
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: nodejs
-    ports:
-      - 4931:5432
+# Upload Service
+  uploadservice:
+    build:
+      context: ./uploadService
+      dockerfile: ./Dockerfile
     volumes:
-      - ./postgres-data:/var/lib/postgresql@16/data
-    networks:
-      - st_sritel-network
-
-
-# Auth Service DB
-  mongodb-1:
-    container_name: st_mongodb-1
-    hostname: mongodb-1
-    image: mongo:latest
+      - ./uploadService:/app
+      - st_upload:/app/uploads
     ports:
-      - "4941:27017"
+      - "4908:4908"
+    environment:
+      - PORT=4908
+    command: air
     networks:
       - st_sritel-network
 
 
+# File Server 
 
-# Billing Service DB
-  mongodb-2:
-    container_name: st_mongodb-2
-    hostname: mongodb-2
-    image: mongo:latest
+  fileserver:
+    image: nginx:latest
+    container_name: st_fileserver
+    volumes:
+      - st_upload:/usr/share/nginx/html/uploads:ro
     ports:
-      - "4942:27017"
-    networks:
-      - st_sritel-network
+      - "4980:80"
+    restart: unless-stopped
+
+
+
+
 
 
 
@@ -208,6 +199,43 @@ services:
       - st_sritel-network
 
 
+  postgres-1:
+    image: postgres:16-alpine
+    container_name: st_postgres-1
+    hostname: postgres-1
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nodejs
+    ports:
+      - 4931:5432
+    volumes:
+      - ./postgres-data:/var/lib/postgresql@16/data
+    networks:
+      - st_sritel-network
+
+# Auth Service DB
+  mongodb-1:
+    container_name: st_mongodb-1
+    hostname: mongodb-1
+    image: mongo:latest
+    ports:
+      - "4941:27017"
+    networks:
+      - st_sritel-network
+
+
+
+# Billing Service DB
+  mongodb-2:
+    container_name: st_mongodb-2
+    hostname: mongodb-2
+    image: mongo:latest
+    ports:
+      - "4942:27017"
+    networks:
+      - st_sritel-network
 
 
 
@@ -228,3 +256,7 @@ services:
 networks:
   st_sritel-network:
     driver: bridge
+
+
+volumes:
+  st_upload:
