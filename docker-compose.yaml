@@ -43,6 +43,8 @@ services:
     networks:
       - st_sritel-network
 
+
+# Test Service
   nodejs:
     hostname: backend
     container_name: st_backend
@@ -60,10 +62,14 @@ services:
       - PORT=4901
 
     # command: ["pnpm", "i" ]
-    entrypoint: ["pnpm", "dev"]
+    # entrypoint: ["pnpm", "dev"]
+    entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
+
     networks:
       - st_sritel-network  
 
+
+# Notification Service
   notification:
     hostname: notification
     container_name: st_notification
@@ -79,7 +85,60 @@ services:
     environment:
       - PORT=4902
 
-    entrypoint: ["pnpm", "dev"]
+    # entrypoint: ["pnpm", "dev"]
+    entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
+
+    networks:
+      - st_sritel-network
+
+
+  authservice:
+    hostname: authservice
+    container_name: st_authservice
+    build: 
+      context: ./authService/
+      dockerfile: ./pnpm.Dockerfile
+    restart: always
+    ports:
+      - 4907:4907
+    volumes:
+      - ./authService:/app
+    working_dir: /app
+    environment:
+      - PORT=4907
+      - MONGODB_URL=mongodb://mongodb-1:27017/authService
+
+    # command: ["pnpm", "i;" ]
+
+    # entrypoint: ["pnpm", "start"]
+    # entrypoint: ["pnpm", "i;"  , "pnpm", "start"]
+    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
+
+
+    networks:
+      - st_sritel-network
+
+  billingservice:
+    hostname: billingservice
+    container_name: st_billingservice
+    build: 
+      context: ./billingService/
+      dockerfile: ./pnpm.Dockerfile
+    restart: always
+    ports:
+      - 4903:4903
+    volumes:
+      - ./billingService:/app
+    working_dir: /app
+    environment:
+      - PORT=4903
+      - MONGODB_URL=mongodb://mongodb-2:27017/billingService
+
+    # command: ["pnpm", "i;" ]
+
+    # entrypoint: ["pnpm", "i" , "&&" , "pnpm", "start"]
+    # start.sh
+    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
     networks:
       - st_sritel-network
 
@@ -87,7 +146,7 @@ services:
 
   postgres-1:
     image: postgres:16-alpine
-    container_name: postgres-1
+    container_name: st_postgres-1
     hostname: postgres-1
     restart: always
     environment:
@@ -101,14 +160,29 @@ services:
     networks:
       - st_sritel-network
 
+
+# Auth Service DB
   mongodb-1:
-    container_name: mongodb-1
+    container_name: st_mongodb-1
     hostname: mongodb-1
     image: mongo:latest
     ports:
       - "4941:27017"
     networks:
       - st_sritel-network
+
+
+
+# Billing Service DB
+  mongodb-2:
+    container_name: st_mongodb-2
+    hostname: mongodb-2
+    image: mongo:latest
+    ports:
+      - "4942:27017"
+    networks:
+      - st_sritel-network
+
 
 
 
