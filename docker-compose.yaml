@@ -185,6 +185,31 @@ services:
 
 
 
+  bff:
+    container_name: st_bff
+    build:
+      context: ./bff
+      dockerfile: Dockerfile
+      # dockerfile: gradle.Dockerfile
+    ports:
+      - "4900:4091"
+    volumes:
+      - ./bff/src:/app/src  # Mount source code for live updates
+      - ./bff/target:/app/target  # Mount target directory to persist compiled code
+    # environment:
+    #   - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+
+
+    command: mvn spring-boot:run
+    # command: "./gradlew bootRun --continuous"
+    # command: "./gradlew bootRun --continuous -Dorg.gradle.daemon=false -Dorg.gradle.unsafe.polling=true"
+
+    networks:
+      - st_sritel-network
+
+
+
+
 
 
 # Mail Service

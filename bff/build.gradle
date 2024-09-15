@@ -1,0 +1,44 @@
+plugins {
+    id 'org.springframework.boot' version '3.3.3'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+}
+
+group = 'com.sri-tel'
+version = '0.0.1-SNAPSHOT'
+description = 'Sri - Tel'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = '22'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+bootJar {
+    excludes = ['org.projectlombok:lombok']
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Optional: Define tasks for packaging, custom configurations, etc.
+task customJar(type: Jar) {
+    archiveBaseName = 'custom-jar'
+    from sourceSets.main.output
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+}
+

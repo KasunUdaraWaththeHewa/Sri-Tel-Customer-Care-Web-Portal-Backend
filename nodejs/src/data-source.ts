@@ -5,7 +5,7 @@ import { Products } from "./entity/Products"
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: "nodejs-postgres",
+    host: "postgres-1",
     port: 5432,
     username: "postgres",
     password: "postgres",
