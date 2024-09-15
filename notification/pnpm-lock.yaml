@@ -41,6 +41,9 @@ importers:
       nodemon:
         specifier: ^3.0.3
         version: 3.1.0
+      notification:
+        specifier: 'file:'
+        version: file:(ts-node@10.9.2(@types/node@20.11.20)(typescript@5.3.3))(typescript@5.3.3)
       pg:
         specifier: ^8.11.3
         version: 8.11.3
@@ -677,6 +680,9 @@ packages:
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
+
+  'notification@file:':
+    resolution: {directory: '', type: directory}
 
   object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
@@ -1753,6 +1759,47 @@ snapshots:
       abbrev: 1.1.1
 
   normalize-path@3.0.0: {}
+
+  notification@file:(ts-node@10.9.2(@types/node@20.11.20)(typescript@5.3.3))(typescript@5.3.3):
+    dependencies:
+      '@types/axios': 0.14.0
+      '@types/node': 20.11.20
+      axios: 1.6.7
+      body-parser: 1.20.2
+      cors: 2.8.5
+      dotenv: 16.3.1
+      express: 4.18.2
+      jsonwebtoken: 9.0.2
+      kafkajs: 2.2.4
+      nodemailer: 6.9.15
+      nodemon: 3.1.0
+      pg: 8.11.3
+      reflect-metadata: 0.2.1
+      ts-node-dev: 2.0.0(@types/node@20.11.20)(typescript@5.3.3)
+      typeorm: 0.3.20(pg@8.11.3)(ts-node@10.9.2(@types/node@20.11.20)(typescript@5.3.3))
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - '@swc/core'
+      - '@swc/wasm'
+      - better-sqlite3
+      - debug
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - node-notifier
+      - oracledb
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+      - typescript
 
   object-assign@4.1.1: {}
 

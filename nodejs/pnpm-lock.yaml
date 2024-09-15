@@ -17,6 +17,9 @@ importers:
       axios:
         specifier: ^1.6.7
         version: 1.6.7
+      backend:
+        specifier: 'file:'
+        version: file:(ts-node@10.9.2(@types/node@20.11.20)(typescript@5.3.3))(typescript@5.3.3)
       body-parser:
         specifier: ^1.20.2
         version: 1.20.2
@@ -206,6 +209,9 @@ packages:
 
   axios@1.6.7:
     resolution: {integrity: sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==}
+
+  'backend@file:':
+    resolution: {directory: '', type: directory}
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -1247,6 +1253,46 @@ snapshots:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
+
+  backend@file:(ts-node@10.9.2(@types/node@20.11.20)(typescript@5.3.3))(typescript@5.3.3):
+    dependencies:
+      '@types/axios': 0.14.0
+      '@types/node': 20.11.20
+      axios: 1.6.7
+      body-parser: 1.20.2
+      cors: 2.8.5
+      dotenv: 16.3.1
+      express: 4.18.2
+      jsonwebtoken: 9.0.2
+      kafkajs: 2.2.4
+      nodemon: 3.1.0
+      pg: 8.11.3
+      reflect-metadata: 0.2.1
+      ts-node-dev: 2.0.0(@types/node@20.11.20)(typescript@5.3.3)
+      typeorm: 0.3.20(pg@8.11.3)(ts-node@10.9.2(@types/node@20.11.20)(typescript@5.3.3))
+    transitivePeerDependencies:
+      - '@google-cloud/spanner'
+      - '@sap/hana-client'
+      - '@swc/core'
+      - '@swc/wasm'
+      - better-sqlite3
+      - debug
+      - hdb-pool
+      - ioredis
+      - mongodb
+      - mssql
+      - mysql2
+      - node-notifier
+      - oracledb
+      - pg-native
+      - pg-query-stream
+      - redis
+      - sql.js
+      - sqlite3
+      - supports-color
+      - ts-node
+      - typeorm-aurora-data-api-driver
+      - typescript
 
   balanced-match@1.0.2: {}
 
