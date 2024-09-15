@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 require("dotenv").config();
 const app = express();
-const PORT=process.env.PORT || 8080;
+const PORT=process.env.PORT;
 const corsOptions = {
     origin: 'http://localhost:3000',
     credentials: true, //access-control-allow-credentials:true
