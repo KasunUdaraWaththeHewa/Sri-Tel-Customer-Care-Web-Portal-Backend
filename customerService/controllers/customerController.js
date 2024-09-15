@@ -33,7 +33,7 @@ exports.createCustomer = async (req, res) => {
 
 exports.updateCustomer = async (req, res) => {
     try {
-        const customer = await newCustomer.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const customer = await Customer.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!customer) {
             return res.status(404).json({ message: 'customer not found' });
         }
