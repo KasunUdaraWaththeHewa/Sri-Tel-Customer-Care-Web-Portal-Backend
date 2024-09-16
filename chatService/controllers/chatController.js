@@ -1,24 +1,34 @@
-const ChatMessage = require("../models/ChatMessage");
-const ApiResponse = require("../dto/responseDto"); // Assuming you're following the ApiResponse structure
+const Chat = require('../models/ChatModel');
 
-// Fetch chat history for a specific room
+// Get chat history by roomId
 const getChatHistory = async (req, res) => {
     const { roomId } = req.params;
-
+    
     try {
-        // Retrieve chat history based on the room ID
-        const messages = await ChatMessage.find({ roomId }).sort({ timestamp: 1 });
-
-        // Send success response with the messages
-        const response = new ApiResponse(true, 200, "Chat history retrieved successfully", messages);
-        res.status(200).json(response);
-    } catch (error) {
-        // Handle error and send failure response
-        const response = new ApiResponse(false, 500, "Failed to retrieve chat history", null);
-        res.status(500).json(response);
+        const chatHistory = await Chat.find({ room: roomId }).sort({ createdAt: 1 });
+        res.status(200).json(chatHistory);
+    } catch (err) {
+        res.status(500).json({ error: 'Unable to fetch chat history' });
     }
 };
 
-module.exports = {
-    getChatHistory
+// Post message in chat room
+const postMessage = async (req, res) => {
+    const { roomId } = req.params;
+    const { message, senderId } = req.body;
+
+    try {
+        const newMessage = new Chat({
+            room: roomId,
+            message,
+            senderId
+        });
+
+        await newMessage.save();
+        res.status(201).json(newMessage);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to post message' });
+    }
 };
+
+module.exports = { getChatHistory, postMessage };

@@ -142,6 +142,26 @@ services:
     networks:
       - st_sritel-network
 
+# Chat Service
+  chatservice:
+    hostname: chatservice
+    container_name: st_chatservice
+    build: 
+      context: ./chatService/
+      dockerfile: ./pnpm.Dockerfile  # Assuming you are using pnpm for managing dependencies
+    restart: always
+    ports:
+      - 4906:4906  # Mapping chat service port
+    volumes:
+      - ./chatService:/app  # Volume to mount the chat service code
+    working_dir: /app
+    environment:
+      - PORT=4906
+      - MONGODB_URL=mongodb://mongodb-chat:27017/chatService  # Environment variable for MongoDB connection
+    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]  # Install dependencies and start the service
+    networks:
+      - st_sritel-network
+
 # Upload Service
   uploadservice:
     build:
@@ -169,8 +189,6 @@ services:
     ports:
       - "4980:80"
     restart: unless-stopped
-
-
 
 
 
@@ -237,6 +255,15 @@ services:
     networks:
       - st_sritel-network
 
+# Chat Service MongoDB
+  mongodb-chat:
+    container_name: st_mongodb_chat
+    hostname: mongodb-chat
+    image: mongo:latest
+    ports:
+      - "4943:27017"  # Mapping MongoDB port for chat service
+    networks:
+      - st_sritel-network
 
 
 
