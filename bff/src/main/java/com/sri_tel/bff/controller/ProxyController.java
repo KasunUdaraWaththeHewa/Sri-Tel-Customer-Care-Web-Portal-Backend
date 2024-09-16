@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.Map;
 
@@ -210,20 +209,26 @@ public class ProxyController {
             return ResponseEntity.ok(new ApiResponse<>(false, HttpStatus.UNAUTHORIZED.value(), "Invalid token", null));
         }
 
-        // If token is valid, forward the request to the microservice
+        // Extract _id and role from the token
+        Map<String, Object> claims = jwtService.getClaimsFromToken(token);
+        String userId = (String) claims.get("_id");
+        String role = (String) claims.get("role");
+
+        // If token is valid, forward the request to the microservice with additional headers
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("user_id", userId);
+        headers.set("role", role);
 
         HttpEntity<Object> entity = new HttpEntity<>(body, headers);
 
         try {
             ResponseEntity<String> response = restTemplate.exchange(backendUrl, method, entity, String.class);
-
             // Parse the backend response to an object
             ApiResponse<?> backendResponse = objectMapper.readValue(response.getBody(), new TypeReference<>() {});
-
             return ResponseEntity.ok(new ApiResponse<>(true, backendResponse.getStatusCode(), backendResponse.getMessage(), backendResponse.getData()));
+
         } catch (Exception e) {
             logger.error("Error forwarding request: ", e);
             return ResponseEntity.ok(new ApiResponse<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null));
