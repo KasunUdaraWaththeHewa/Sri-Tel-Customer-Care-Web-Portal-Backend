@@ -49,7 +49,7 @@ const userSchema = new Schema({
   role: {
     type: String,
     required: true,
-    enum: ["customer"],
+    enum: ["customer", "admin", "staff"],
     default: "customer",
   },
   status: {
@@ -66,7 +66,16 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  resetToken: {
+    type: String,
+    required: false,
+  },
+  resetTokenExpires: {
+    type: Date,
+    required: false,
+  },
 });
+
 
 // Signup Method
 userSchema.statics.signup = async function ({
@@ -175,6 +184,51 @@ userSchema.statics.changePassword = async function ({
   await user.save();
 
   return user;
+};
+
+userSchema.statics.forgotPassword = async function (email) {
+  const user = await this.findOne({ email });
+  if (!user) {
+    throw new Error("No account with that email found.");
+  }
+
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  user.resetToken = resetToken;
+  user.resetTokenExpires = Date.now() + 3600000; // 1 hour expiration
+
+  await user.save();
+
+  // Send the token to the user's email (mock function, replace with actual implementation)
+  sendResetTokenEmail(user.email, resetToken);
+
+  return resetToken;
+};
+
+userSchema.statics.resetPassword = async function (resetToken, newPassword) {
+  const user = await this.findOne({
+    resetToken,
+    resetTokenExpires: { $gt: Date.now() },
+  });
+  if (!user) {
+    throw new Error("Invalid or expired reset token.");
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(newPassword, salt);
+
+  user.password = hash;
+  user.resetToken = undefined;
+  user.resetTokenExpires = undefined;
+
+  await user.save();
+
+  return user;
+};
+
+const sendResetTokenEmail = (email, resetToken) => {
+  // Implement email sending logic here
+  // This could involve integrating with an email service provider
+  console.log(`Password reset token sent to ${email}: ${resetToken}`);
 };
 
 module.exports = mongoose.model("User", userSchema);
