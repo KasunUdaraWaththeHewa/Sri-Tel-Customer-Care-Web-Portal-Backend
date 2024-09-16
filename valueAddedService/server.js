@@ -25,8 +25,14 @@ connection.once("open",()=>{
     console.log("MongoDB Connection Success!");
 })
 
-const accountRoutes=require("./routes/accountRoutes.js");
-app.use("/accounts",accountRoutes);
+const dataTopUpRoutes=require("./routes/dataTopUpRoutes");
+app.use("/valueAdded/data",dataTopUpRoutes);
+const internationalRoamingRoutes=require("./routes/internationalRoamingRoutes");
+app.use("/valueAdded/roaming",internationalRoamingRoutes);
+const ringToneRoutes=require("./routes/ringToneRoutes");
+app.use("/valueAdded/ringtone",ringToneRoutes);
+const subscriptionBasedRoutes=require("./routes/subscriptionBasedRoutes");
+app.use("/valueAdded/subscription",subscriptionBasedRoutes);
 
 
 

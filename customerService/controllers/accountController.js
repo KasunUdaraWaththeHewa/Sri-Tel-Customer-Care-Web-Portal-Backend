@@ -1,5 +1,5 @@
 const Account = require("../models/Account");
-const ApiResponse = require("../utils/ApiResponse");
+const ApiResponse = require("../dto/responseDto");
 
 const createAccount = async (req, res) => {
   try {
