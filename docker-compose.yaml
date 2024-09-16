@@ -20,7 +20,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
+          cpus: "1.0"
           memory: 1024M
     networks:
       - st_sritel-network
@@ -38,17 +38,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
+          cpus: "1.0"
           memory: 1024M
     networks:
       - st_sritel-network
 
-
-# Test Service
+  # Test Service
   nodejs:
     hostname: backend
     container_name: st_backend
-    build: 
+    build:
       context: ./nodejs/
       dockerfile: ./pnpm.Dockerfile
     restart: always
@@ -66,14 +65,13 @@ services:
     entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
 
     networks:
-      - st_sritel-network  
+      - st_sritel-network
 
-
-# Notification Service
+  # Notification Service
   notification:
     hostname: notification
     container_name: st_notification
-    build: 
+    build:
       context: ./notification/
       dockerfile: ./pnpm.Dockerfile
     restart: always
@@ -91,11 +89,10 @@ services:
     networks:
       - st_sritel-network
 
-
   authservice:
     hostname: authservice
     container_name: st_authservice
-    build: 
+    build:
       context: ./authService/
       dockerfile: ./pnpm.Dockerfile
     restart: always
@@ -114,14 +111,13 @@ services:
     # entrypoint: ["pnpm", "i;"  , "pnpm", "start"]
     entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
 
-
     networks:
       - st_sritel-network
 
   billingservice:
     hostname: billingservice
     container_name: st_billingservice
-    build: 
+    build:
       context: ./billingService/
       dockerfile: ./pnpm.Dockerfile
     restart: always
@@ -142,7 +138,26 @@ services:
     networks:
       - st_sritel-network
 
-# Upload Service
+  bill-service:
+    hostname: bill-service
+    container_name: st_bill-service
+    build:
+      context: ./bill-service/
+      dockerfile: ./pnpm.Dockerfile
+    restart: always
+    ports:
+      - 4904:4904
+    volumes:
+      - ./bill-service:/app
+    working_dir: /app
+    environment:
+      - PORT=4904
+      - MONGODB_URL=mongodb://mongodb-3:27017/billService
+    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
+    networks:
+      - st_sritel-network
+
+  # Upload Service
   uploadservice:
     build:
       context: ./uploadService
@@ -158,8 +173,7 @@ services:
     networks:
       - st_sritel-network
 
-
-# File Server 
+  # File Server
 
   fileserver:
     image: nginx:latest
@@ -170,12 +184,6 @@ services:
       - "4980:80"
     restart: unless-stopped
 
-
-
-
-
-
-
   bff:
     container_name: st_bff
     build:
@@ -185,11 +193,10 @@ services:
     ports:
       - "4900:4091"
     volumes:
-      - ./bff/src:/app/src  # Mount source code for live updates
-      - ./bff/target:/app/target  # Mount target directory to persist compiled code
+      - ./bff/src:/app/src # Mount source code for live updates
+      - ./bff/target:/app/target # Mount target directory to persist compiled code
     # environment:
     #   - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-
 
     command: mvn spring-boot:run
     # command: "./gradlew bootRun --continuous"
@@ -197,7 +204,6 @@ services:
 
     networks:
       - st_sritel-network
-
 
   postgres-1:
     image: postgres:16-alpine
@@ -215,7 +221,7 @@ services:
     networks:
       - st_sritel-network
 
-# Auth Service DB
+  # Auth Service DB
   mongodb-1:
     container_name: st_mongodb-1
     hostname: mongodb-1
@@ -225,9 +231,7 @@ services:
     networks:
       - st_sritel-network
 
-
-
-# Billing Service DB
+  # Billing Service DB
   mongodb-2:
     container_name: st_mongodb-2
     hostname: mongodb-2
@@ -237,10 +241,16 @@ services:
     networks:
       - st_sritel-network
 
+  mongodb-3:
+    container_name: st_mongodb-3
+    hostname: mongodb-3
+    image: mongo:latest
+    ports:
+      - "4943:27017"
+    networks:
+      - st_sritel-network
 
-
-
-# Mail Service
+  # Mail Service
   mail:
     container_name: st_mail
     hostname: mail
@@ -251,12 +261,9 @@ services:
     networks:
       - st_sritel-network
 
-
-
 networks:
   st_sritel-network:
     driver: bridge
-
 
 volumes:
   st_upload:
