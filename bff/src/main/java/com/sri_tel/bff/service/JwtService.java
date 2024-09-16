@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 
 @Service
 public class JwtService {
@@ -17,5 +19,14 @@ public class JwtService {
                 .setSigningKey(jwtSecretKey.getBytes())
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    // Method to extract all claims from the token
+    public Map<String, Object> getClaimsFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtSecretKey)
+                .parseClaimsJws(token)
+                .getBody();
+        return claims;
     }
 }

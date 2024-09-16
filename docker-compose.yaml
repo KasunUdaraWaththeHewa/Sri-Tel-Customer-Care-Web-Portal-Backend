@@ -107,6 +107,7 @@ services:
     environment:
       - PORT=4907
       - MONGODB_URL=mongodb://mongodb-1:27017/authService
+      - JWT_SECRET_KEY=M5vH+hjjkkPdcuB4EI7EuVgQrq9hSOZ6w3/rYFtE0tUaSGh6A+aWV/qc0i9mebYr0bnatT6Bvllwx/HizXvj6Q==
 
     # command: ["pnpm", "i;" ]
 
@@ -192,6 +193,7 @@ services:
       - CORE_UPLOAD_SERVICE_URL=http://localhost:4908/api/upload
       - CORE_VALUE_ADDED_SERVICE_URL=http://localhost:4909/api/value-added
       - SERVER_PORT=4901
+      - JWT_SECRET_KEY=M5vH+hjjkkPdcuB4EI7EuVgQrq9hSOZ6w3/rYFtE0tUaSGh6A+aWV/qc0i9mebYr0bnatT6Bvllwx/HizXvj6Q==
     command: mvn spring-boot:run
     networks:
       - st_sritel-network
