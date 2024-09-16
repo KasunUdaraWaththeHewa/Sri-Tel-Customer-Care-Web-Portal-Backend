@@ -27,6 +27,10 @@ const SubscriptionVASchema = new mongoose.Schema(
     expiryDate: {
       type: Date,
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

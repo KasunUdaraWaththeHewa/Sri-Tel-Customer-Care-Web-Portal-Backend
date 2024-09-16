@@ -12,9 +12,11 @@ const RingToneSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    price: { type: Number, required: true },
     toneId: { type: String, required: true },
     activationDate: { type: Date, default: Date.now },
     expiryDate: { type: Date },
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

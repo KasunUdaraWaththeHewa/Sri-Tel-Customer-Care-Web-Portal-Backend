@@ -14,7 +14,8 @@ const DataTopUpSchema = new mongoose.Schema(
     },
     dataAmount: { type: Number, required: true }, // Amount in MB/GB
     topUpDate: { type: Date, default: Date.now },
-    expiryDate: { type: Date }, // Optional, based on plan duration
+    isActive: { type: Boolean, default: true },
+    expiryDate: { type: Date },
   },
   { timestamps: true }
 );

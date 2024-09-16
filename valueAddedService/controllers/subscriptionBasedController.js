@@ -1,4 +1,4 @@
-const SubscriptionVAS = require("../models/SubscriptionVAS");
+const SubscriptionVAS = require("../models/SubscriptionBased");
 const Subscription = require("../models/Subscription");
 const ApiResponse = require("../dto/responseDto");
 
