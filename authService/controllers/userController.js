@@ -1,43 +1,298 @@
-//const { JsonWebTokenError } = require('jsonwebtoken');
-const User = require('../models/UserModel');
-const jwt = require('jsonwebtoken');
+const User = require("../models/UserModel");
+const jwt = require("jsonwebtoken");
+const ApiResponse = require("../dto/responseDto");
 
 const createToken = (_id, role) => {
-    return jwt.sign({ _id, role }, process.env.SECRET, { expiresIn: '3d' });
+  return jwt.sign({ _id, role }, process.env.SECRET, { expiresIn: "3d" });
 };
 
 const loginUser = async (req, res) => {
-    const { email, password} = req.body;
-    try {
-        const user = await User.login({email, password});
-        const token = createToken(user._id, user.role);
-        const role=user.role;
-        const name=user.name;
-        res.status(200).json({ email, token,role,name});
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.login({ email, password });
+    const token = createToken(user._id, user.role);
+    const response = new ApiResponse(true, 200, "Login successful", {
+      email,
+      token,
+      role: user.role,
+      fullName: user.fullName,
+    });
+    res.status(200).json(response);
+  } catch (err) {
+    const response = new ApiResponse(false, 400, err.message, null);
+    res.status(400).json(response);
+  }
 };
 
 const signupUser = async (req, res) => {
-    const { email, password, name, role } = req.body;
-    try {
-        const user = await User.signup({email, password, name, role});
-        const token = createToken(user._id, user.role);
-        res.status(200).json({ email, token});
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+  const { email, password, fullName, dateOfBirth, phoneNumber, address, nic } =
+    req.body;
+
+  try {
+    const user = await User.signup({
+      email,
+      password,
+      fullName,
+      dateOfBirth,
+      phoneNumber,
+      address,
+      nic,
+    });
+
+    const token = createToken(user._id, user.role);
+    const response = new ApiResponse(true, 200, "Signup successful", {
+      email,
+      token,
+    });
+    res.status(200).json(response);
+  } catch (err) {
+    const response = new ApiResponse(false, 400, err.message, null);
+    res.status(400).json(response);
+  }
 };
+
 const changePassword = async (req, res) => {
-    const { email, currentPassword, newPassword, confirmNewPassword } = req.body;
-    try {
-      const user = await User.changePassword({ email, currentPassword, newPassword, confirmNewPassword });
-      const token = createToken(user._id, user.role);
-      res.status(200).json({ email, token});
-    } catch (err) {
-      res.status(400).json({ error: err.message });
+  const { email, currentPassword, newPassword, confirmNewPassword } = req.body;
+
+  try {
+    const user = await User.changePassword({
+      email,
+      currentPassword,
+      newPassword,
+      confirmNewPassword,
+    });
+
+    const token = createToken(user._id, user.role);
+    const response = new ApiResponse(
+      true,
+      200,
+      "Password changed successfully",
+      { email, token }
+    );
+    res.status(200).json(response);
+  } catch (err) {
+    const response = new ApiResponse(false, 400, err.message, null);
+    res.status(400).json(response);
+  }
+};
+
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    await User.forgotPassword(email);
+    const response = new ApiResponse(
+      true,
+      200,
+      "Password reset token sent to email",
+      null
+    );
+    res.status(200).json(response);
+  } catch (err) {
+    const response = new ApiResponse(false, 400, err.message, null);
+    res.status(400).json(response);
+  }
+};
+
+const resetPassword = async (req, res) => {
+  const { resetToken, newPassword } = req.body;
+  try {
+    const user = await User.resetPassword(resetToken, newPassword);
+    const token = createToken(user._id, user.role);
+    const response = new ApiResponse(true, 200, "Password reset successful", {
+      email: user.email,
+      token,
+    });
+    res.status(200).json(response);
+  } catch (err) {
+    const response = new ApiResponse(false, 400, err.message, null);
+    res.status(400).json(response);
+  }
+};
+
+const getProfileDetails = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      const response = new ApiResponse(false, 404, "User not found", null);
+      return res.status(404).json(response);
     }
-  };
-  
-  module.exports = { signupUser, loginUser, changePassword };
+
+    const response = new ApiResponse(
+      true,
+      200,
+      "User details fetched successfully",
+      {
+        email: user.email,
+        fullName: user.fullName,
+        dateOfBirth: user.dateOfBirth,
+        phoneNumber: user.phoneNumber,
+        address: user.address,
+        nic: user.nic,
+        role: user.role,
+        status: user.status,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }
+    );
+    res.status(200).json(response);
+  } catch (err) {
+    const response = new ApiResponse(
+      false,
+      500,
+      "An error occurred while fetching user details",
+      null
+    );
+    res.status(500).json(response);
+  }
+};
+
+const editProfileDetails = async (req, res) => {
+  const { email, fullName, dateOfBirth, phoneNumber, address, nic } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      const response = new ApiResponse(false, 404, "User not found", null);
+      return res.status(404).json(response);
+    }
+
+    if (fullName) user.fullName = fullName;
+    if (dateOfBirth) user.dateOfBirth = dateOfBirth;
+    if (phoneNumber) user.phoneNumber = phoneNumber;
+    if (address) user.address = address;
+    if (nic) user.nic = nic;
+
+    user.updatedAt = Date.now();
+    await user.save();
+
+    const response = new ApiResponse(
+      true,
+      200,
+      "Profile updated successfully",
+      {
+        email: user.email,
+        fullName: user.fullName,
+        dateOfBirth: user.dateOfBirth,
+        phoneNumber: user.phoneNumber,
+        address: user.address,
+        nic: user.nic,
+        role: user.role,
+        status: user.status,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }
+    );
+    res.status(200).json(response);
+  } catch (err) {
+    const response = new ApiResponse(
+      false,
+      500,
+      "An error occurred while updating profile details",
+      null
+    );
+    res.status(500).json(response);
+  }
+};
+
+const deactivateAccount = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      const response = new ApiResponse(false, 404, "User not found", null);
+      return res.status(404).json(response);
+    }
+
+    if (user.status === "inactive") {
+      const response = new ApiResponse(
+        false,
+        400,
+        "Account is already inactive",
+        null
+      );
+      return res.status(400).json(response);
+    }
+
+    user.status = "inactive";
+    user.updatedAt = Date.now();
+    await user.save();
+
+    const response = new ApiResponse(
+      true,
+      200,
+      "Account deactivated successfully",
+      null
+    );
+    res.status(200).json(response);
+  } catch (err) {
+    const response = new ApiResponse(
+      false,
+      500,
+      "An error occurred while deactivating the account",
+      null
+    );
+    res.status(500).json(response);
+  }
+};
+
+const activateAccount = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      const response = new ApiResponse(false, 404, "User not found", null);
+      return res.status(404).json(response);
+    }
+
+    if (user.status === "active") {
+      const response = new ApiResponse(
+        false,
+        400,
+        "Account is already active",
+        null
+      );
+      return res.status(400).json(response);
+    }
+
+    user.status = "active";
+    user.updatedAt = Date.now();
+    await user.save();
+
+    const response = new ApiResponse(
+      true,
+      200,
+      "Account activated successfully",
+      null
+    );
+    res.status(200).json(response);
+  } catch (err) {
+    const response = new ApiResponse(
+      false,
+      500,
+      "An error occurred while activating the account",
+      null
+    );
+    res.status(500).json(response);
+  }
+};
+
+module.exports = {
+  signupUser,
+  loginUser,
+  changePassword,
+  forgotPassword,
+  resetPassword,
+  getProfileDetails,
+  editProfileDetails,
+  deactivateAccount,
+  activateAccount,
+};
