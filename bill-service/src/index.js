@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -7,8 +8,10 @@ const app = express();
 app.use(bodyParser.json());
 
 // DB Connection
+const mongoUri =
+  process.env.MONGO_URI || "mongodb://localhost:27017/billService";
 mongoose
-  .connect("mongodb://localhost:27017/billService", {
+  .connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
