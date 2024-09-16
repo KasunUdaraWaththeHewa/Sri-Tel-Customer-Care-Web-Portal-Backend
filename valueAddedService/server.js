@@ -39,6 +39,15 @@ const toneCatalogRoutes=require("./routes/toneRoutes");
 app.use("/valueAdded/toneCatalog",toneCatalogRoutes);
 const dataTopUpPackageRoutes=require("./routes/dataTopUpPackageRoutes");
 app.use("/valueAdded/dataTopUpPackages",dataTopUpPackageRoutes);
+const dataRoutes=require("./routes/dataRoutes");
+app.use("/packages/dataCatelog",dataRoutes);
+const voiceRoutes=require("./routes/voiceRoutes");  
+app.use("/packages/voiceCatelog",voiceRoutes);
+const dataPackageRoutes=require("./routes/dataPackageRoutes");
+app.use("/packages/dataPackages",dataPackageRoutes);
+const voicePackageRoutes=require("./routes/voicePackageRoutes");
+app.use("/packages/voicePackages",voicePackageRoutes);
+
 
 
 
