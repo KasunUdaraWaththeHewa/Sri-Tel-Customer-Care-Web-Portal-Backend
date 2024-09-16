@@ -25,8 +25,8 @@ connection.once("open",()=>{
     console.log("MongoDB Connection Success!");
 })
 
-const customerRoutes=require("./routes/customerRoutes.js");
-app.use("/customers",customerRoutes);
+const accountRoutes=require("./routes/accountRoutes.js");
+app.use("/accounts",accountRoutes);
 
 
 
