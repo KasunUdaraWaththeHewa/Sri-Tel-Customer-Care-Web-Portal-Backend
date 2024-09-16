@@ -1,11 +1,34 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const SubscriptionVASchema = new mongoose.Schema({
-    customerId: { type: mongoose.Schema.Types.ObjectId, required: true },
-    serviceName: { type: String, required: true }, // E.g., SMS Pack, Premium Caller Tunes
-    isActive: { type: Boolean, default: false },
-    subscriptionDate: { type: Date },
-    expiryDate: { type: Date }, // Based on subscription duration
-}, { timestamps: true });
+const SubscriptionVASchema = new mongoose.Schema(
+  {
+    accountID: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
+    subscriptionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subscription",
+      required: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
+    subscriptionDate: {
+      type: Date,
+    },
+    expiryDate: {
+      type: Date,
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('SubscriptionVAS', SubscriptionVASchema);
+module.exports = mongoose.model("SubscriptionVAS", SubscriptionVASchema);

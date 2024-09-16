@@ -1,10 +1,22 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const RingToneSchema = new mongoose.Schema({
-    customerId: { type: mongoose.Schema.Types.ObjectId, required: true },
-    toneId: { type: String, required: true }, // Reference to a tone catalog
+const RingToneSchema = new mongoose.Schema(
+  {
+    accountID: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
+    toneId: { type: String, required: true },
     activationDate: { type: Date, default: Date.now },
-    expiryDate: { type: Date } // Optional for temporary tones
-}, { timestamps: true });
+    expiryDate: { type: Date },
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('RingTone', RingToneSchema);
+module.exports = mongoose.model("RingTone", RingToneSchema);

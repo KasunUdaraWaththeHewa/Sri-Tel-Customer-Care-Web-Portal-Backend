@@ -1,17 +1,34 @@
 const RingTone = require('../models/RingTone');
+const ApiResponse = require("../dto/responseDto");
 
 const personalizeTone = async (req, res) => {
-    const { customerId, toneId } = req.body;
+    const { accountID, email, toneId, durationInDays } = req.body;
+
     try {
+        const expiryDate = durationInDays ? calculateExpiryDate(durationInDays) : null;
+
         const tone = new RingTone({
-            customerId,
+            accountID,
+            email,
             toneId,
+            expiryDate
         });
+
         await tone.save();
-        res.status(201).json({ message: "Ring-back tone personalized!" });
+
+        const response = new ApiResponse(true, 201, "Ring-back tone personalized!", tone);
+        res.status(201).json(response);
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        const response = new ApiResponse(false, 500, "Server error while personalizing ring-back tone.", null);
+        res.status(500).json(response);
     }
+};
+
+const calculateExpiryDate = (days) => {
+  const now = new Date();
+  now.setDate(now.getDate() + days);
+  return now;
 };
 
 module.exports = { personalizeTone };

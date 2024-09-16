@@ -33,6 +33,12 @@ const ringToneRoutes=require("./routes/ringToneRoutes");
 app.use("/valueAdded/ringtone",ringToneRoutes);
 const subscriptionBasedRoutes=require("./routes/subscriptionBasedRoutes");
 app.use("/valueAdded/subscription",subscriptionBasedRoutes);
+const subscriptionRoutes=require("./routes/subscriptionRoutes");
+app.use("/valueAdded/subscriptionPackages",subscriptionRoutes);
+const toneCatalogRoutes=require("./routes/toneRoutes");
+app.use("/valueAdded/toneCatalog",toneCatalogRoutes);
+const dataTopUpPackageRoutes=require("./routes/dataTopUpPackageRoutes");
+app.use("/valueAdded/dataTopUpPackages",dataTopUpPackageRoutes);
 
 
 
