@@ -1,4 +1,3 @@
-//const { JsonWebTokenError } = require('jsonwebtoken');
 const User = require('../models/UserModel');
 const jwt = require('jsonwebtoken');
 
@@ -7,37 +6,56 @@ const createToken = (_id, role) => {
 };
 
 const loginUser = async (req, res) => {
-    const { email, password} = req.body;
+    const { email, password } = req.body;
+
     try {
-        const user = await User.login({email, password});
+        const user = await User.login({ email, password });
         const token = createToken(user._id, user.role);
-        const role=user.role;
-        const name=user.name;
-        res.status(200).json({ email, token,role,name});
+        const role = user.role;
+        const fullName = user.fullName;
+        res.status(200).json({ email, token, role, fullName });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 };
 
 const signupUser = async (req, res) => {
-    const { email, password, name, role } = req.body;
+    const { email, password, fullName, dateOfBirth, phoneNumber, address, nic } = req.body;
+
     try {
-        const user = await User.signup({email, password, name, role});
+        const user = await User.signup({
+            email,
+            password,
+            fullName,
+            dateOfBirth,
+            phoneNumber,
+            address,
+            nic,
+        });
+
         const token = createToken(user._id, user.role);
-        res.status(200).json({ email, token});
+        res.status(200).json({ email, token });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 };
+
 const changePassword = async (req, res) => {
     const { email, currentPassword, newPassword, confirmNewPassword } = req.body;
+
     try {
-      const user = await User.changePassword({ email, currentPassword, newPassword, confirmNewPassword });
-      const token = createToken(user._id, user.role);
-      res.status(200).json({ email, token});
+        const user = await User.changePassword({
+            email,
+            currentPassword,
+            newPassword,
+            confirmNewPassword,
+        });
+
+        const token = createToken(user._id, user.role);
+        res.status(200).json({ email, token });
     } catch (err) {
-      res.status(400).json({ error: err.message });
+        res.status(400).json({ error: err.message });
     }
-  };
-  
-  module.exports = { signupUser, loginUser, changePassword };
+};
+
+module.exports = { signupUser, loginUser, changePassword };
