@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const billRoutes = require("./routes/billRoutes");
+const { startBillingCronJob } = require("./jobs/billingCronJob");
 
 const app = express();
 app.use(bodyParser.json());
@@ -20,6 +21,9 @@ mongoose
 
 // Routes
 app.use("/api/bills", billRoutes);
+
+// Initialize cron jobs
+startBillingCronJob();
 
 // Start server
 const PORT = process.env.PORT || 3001;
