@@ -17,4 +17,4 @@ COPY src /app/src
 EXPOSE 8080
 
 # Default entry point for development (compile and run the project)
-CMD ["mvn", "spring-boot:run"]
+# CMD ["mvn", "spring-boot:run"]

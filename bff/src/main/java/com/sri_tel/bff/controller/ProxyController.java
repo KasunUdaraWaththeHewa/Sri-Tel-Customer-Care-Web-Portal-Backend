@@ -15,6 +15,23 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.LinkedMultiValueMap;
+
+
+
+
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.http.HttpHeaders;
+
+
+import com.sri_tel.bff.util.MultipartFileResource;
+
+import java.io.IOException;
+// import java.net.http.HttpHeaders;
 import java.util.Map;
 
 @RestController
@@ -177,6 +194,74 @@ public class ProxyController {
 
         return forwardRequestWithToken(backendUrl + requestUri, token, requestBody, HttpMethod.PATCH);
     }
+
+
+
+    @PostMapping("/forward/upload/**")
+    public ResponseEntity<?> forwardUploadRequest(
+        @RequestHeader("Authorization") String token,
+        HttpServletRequest request) {
+
+    String requestUri = request.getRequestURI().replace("/api/proxy/forward", "");
+    String backendUrl = imageUploadServiceUrl + requestUri;
+
+    // Token validation
+    if (!validateToken(token)) {
+        return ResponseEntity.ok(new ApiResponse<>(false, HttpStatus.UNAUTHORIZED.value(), "Invalid token", null));
+    }
+
+    // Extract user ID and role from the token
+    Map<String, Object> claims = jwtService.getClaimsFromToken(token);
+    String userId = (String) claims.get("_id");
+    String role = (String) claims.get("role");
+
+    // Check if the request is a multipart request
+    if (!(request instanceof MultipartHttpServletRequest)) {
+        return ResponseEntity.ok(new ApiResponse<>(false, HttpStatus.BAD_REQUEST.value(), "Request is not multipart", null));
+    }
+
+    MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+
+    // Prepare headers
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+    headers.set("Authorization", token);
+    headers.set("user_id", userId);
+    headers.set("role", role);
+
+    // Build the body of the request
+    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+    // Add form fields
+    multipartRequest.getParameterMap().forEach((key, values) -> {
+        for (String value : values) {
+            body.add(key, value);
+        }
+    });
+
+    // Add files
+// Add files
+    multipartRequest.getFileMap().forEach((key, file) -> {
+        try {
+            body.add(key, new MultipartFileResource(file));
+        } catch (IOException e) {
+            logger.error("Error processing multipart file", e);
+            throw new RuntimeException("Error processing multipart file", e);
+        }
+    });
+
+
+    HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
+
+    try {
+        ResponseEntity<String> response = restTemplate.exchange(backendUrl, HttpMethod.POST, entity, String.class);
+        ApiResponse<?> backendResponse = objectMapper.readValue(response.getBody(), new TypeReference<>() {});
+        return ResponseEntity.ok(new ApiResponse<>(true, backendResponse.getStatusCode(), backendResponse.getMessage(), backendResponse.getData()));
+    } catch (Exception e) {
+        logger.error("Error forwarding request: ", e);
+        return ResponseEntity.ok(new ApiResponse<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null));
+    }
+}
 
     // Determine which backend service to use based on request URI
     private String determineBackendUrl(String requestUri) {
