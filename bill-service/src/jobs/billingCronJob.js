@@ -21,11 +21,25 @@ const startBillingCronJob = () => {
 
           // Fetch all accounts from the BFF (Customer Service via proxy)
           const customerServiceUrl =
-            "http://bff-service-url/api/proxy/forward/customer/accounts"; // Replace with actual endpoint
+            "http://localhost:4901/api/proxy/forward/customer"; // Replace with actual endpoint
           const accountsResponse = await axios.get(customerServiceUrl, {
-            headers: { Authorization: "Bearer your_jwt_token" }, // Provide the appropriate JWT token
+            headers: {
+              Authorization:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGY3YTdlMWI0ZTRhN2YyZDhjOGM0YjQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjY1NzE2NzIsImV4cCI6MjY3MzI5OTY3Mn0.QpKKDpMZ4bH7kXAHxGob_Vg7I3dLL0ogBxRdb-qfBp4",
+            }, // Provide the appropriate JWT token
           });
           const accounts = accountsResponse.data.data; // Assuming BFF returns accounts in the "data" field
+          // Filter out inactive accounts
+          const activeAccounts = accounts.filter(
+            (account) => account.status === "Active"
+          );
+
+          // Filter out services that have been deactivated
+          activeAccounts.forEach((account) => {
+            account.services = account.services.filter(
+              (service) => !service.deactivationDate
+            );
+          });
 
           for (const account of accounts) {
             // Fetch subscribed services from the Value-Added Service (via BFF proxy)
