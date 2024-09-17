@@ -227,6 +227,7 @@ public class ProxyController {
             ResponseEntity<String> response = restTemplate.exchange(backendUrl, method, entity, String.class);
             // Parse the backend response to an object
             ApiResponse<?> backendResponse = objectMapper.readValue(response.getBody(), new TypeReference<>() {});
+            logger.info("Received response from chat service: " + response.getBody());
             return ResponseEntity.ok(new ApiResponse<>(true, backendResponse.getStatusCode(), backendResponse.getMessage(), backendResponse.getData()));
 
         } catch (Exception e) {
