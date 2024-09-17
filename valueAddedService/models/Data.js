@@ -13,6 +13,7 @@ const DataSchema = new mongoose.Schema(
       lowercase: true,
     },
     dataAmount: { type: Number, required: true }, // Amount in MB/GB
+    price: { type: Number, required: true },
     activationDate: { type: Date, default: Date.now },
     deactivatedDate: { type: Date },
     expiryDate: { type: Date },
