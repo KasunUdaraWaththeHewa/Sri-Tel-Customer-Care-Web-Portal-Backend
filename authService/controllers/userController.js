@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const ApiResponse = require("../dto/responseDto");
 
 const createToken = (_id, role) => {
-  return jwt.sign({ _id, role }, process.env.SECRET, { expiresIn: "3d" });
+  return jwt.sign({ _id, role }, process.env.JWT_SECRET_KEY, { expiresIn: "3d" });
 };
 
 const loginUser = async (req, res) => {

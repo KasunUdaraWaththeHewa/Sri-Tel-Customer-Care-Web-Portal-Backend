@@ -52,7 +52,7 @@ services:
       dockerfile: ./pnpm.Dockerfile
     restart: always
     ports:
-      - 4901:4901
+      - 4999:4901
     volumes:
       - ./nodejs:/app
     working_dir: /app
@@ -253,24 +253,25 @@ services:
 
   bff:
     container_name: st_bff
+    hostname: bff
     build:
       context: ./bff
       dockerfile: Dockerfile
     ports:
-      - "4900:4091"
+      - "4901:4901"
     volumes:
       - ./bff/src:/app/src # Mount source code for live updates
       - ./bff/target:/app/target # Mount target directory to persist compiled code
     environment:
       # - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-      - CORE_NOTIFICATION_SERVICE_URL=http://notification:4902/api/notification
-      - CORE_BILLING_SERVICE_URL=http://billingservice:4903/api/billing
-      - CORE_PAYMENT_SERVICE_URL=http://paymentservice:4904/api/payment
-      - CORE_CUSTOMER_SERVICE_URL=http://customerservice:4905/api/customer
-      - CORE_CHAT_SERVICE_URL=http://chatservice:4906/api/chat
-      - CORE_AUTH_SERVICE_URL=http://authservice:4907/api/auth
-      - CORE_UPLOAD_SERVICE_URL=http://uploadservice:4908/api/upload
-      - CORE_VALUE_ADDED_SERVICE_URL=http://localhost:4909/api/value-added
+      - CORE_NOTIFICATION_SERVICE_URL=http://notification:4902/api
+      - CORE_BILLING_SERVICE_URL=http://billingservice:4903/api
+      - CORE_PAYMENT_SERVICE_URL=http://paymentservice:4904/api
+      - CORE_CUSTOMER_SERVICE_URL=http://customerservice:4905/api
+      - CORE_CHAT_SERVICE_URL=http://chatservice:4906/api
+      - CORE_AUTH_SERVICE_URL=http://authservice:4907/api
+      - CORE_UPLOAD_SERVICE_URL=http://uploadservice:4908/api
+      - CORE_VALUE_ADDED_SERVICE_URL=http://localhost:4909/api
       - SERVER_PORT=4901
       - JWT_SECRET_KEY=M5vH+hjjkkPdcuB4EI7EuVgQrq9hSOZ6w3/rYFtE0tUaSGh6A+aWV/qc0i9mebYr0bnatT6Bvllwx/HizXvj6Q==
     command: mvn spring-boot:run

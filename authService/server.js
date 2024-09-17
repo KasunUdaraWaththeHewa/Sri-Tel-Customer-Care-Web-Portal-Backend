@@ -26,7 +26,7 @@ connection.once("open",()=>{
 })
 
 const userRoutes=require("./routes/user.js");
-app.use("/user",userRoutes);
+app.use("/api/auth",userRoutes);
 
 
 app.listen(PORT,()=>{
