@@ -1,5 +1,6 @@
 const Voice = require("../models/Voice");
 const ApiResponse = require("../dto/responseDto");
+const { checkExistingAccount } = require("../function/checkExistingAccount");
 
 const calculateExpiryDate = (days) => {
   const now = new Date();
@@ -9,7 +10,15 @@ const calculateExpiryDate = (days) => {
 
 const activateVoice = async (req, res) => {
   const { accountID, email, voiceMinutes } = req.body;
+
   try {
+    const existingAccount = checkExistingAccount(accountID);
+
+    if (!existingAccount) {
+      const response = new ApiResponse(false, 404, "Account not found.", null);
+      return res.status(404).json(response);
+    }
+
     const existingVoice = await Voice.findOne({ accountID, email });
     
     if (existingVoice) {
