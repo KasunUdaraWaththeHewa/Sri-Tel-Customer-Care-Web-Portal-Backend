@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import org.springframework.util.MultiValueMap;
@@ -25,8 +27,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.http.HttpHeaders;
-
 
 import com.sri_tel.bff.util.MultipartFileResource;
 
@@ -309,15 +309,27 @@ public class ProxyController {
         HttpEntity<Object> entity = new HttpEntity<>(body, headers);
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(backendUrl, method, entity, String.class);
-            // Parse the backend response to an object
-            ApiResponse<?> backendResponse = objectMapper.readValue(response.getBody(), new TypeReference<>() {});
-            logger.info("Received response from chat service: " + response.getBody());
-            return ResponseEntity.ok(new ApiResponse<>(true, backendResponse.getStatusCode(), backendResponse.getMessage(), backendResponse.getData()));
-
+        // Forward the request to the backend
+        ResponseEntity<String> response = restTemplate.exchange(backendUrl, method, entity, String.class);
+        
+        // Forward the exact response back to the client
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        
+        } catch (HttpClientErrorException e) {
+            // Handle 4xx errors from the backend
+            logger.error("Client error forwarding request: ", e);
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+            
+        } catch (HttpServerErrorException e) {
+            // Handle 5xx errors from the backend
+            logger.error("Server error forwarding request: ", e);
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+            
         } catch (Exception e) {
+            // Handle any other errors
             logger.error("Error forwarding request: ", e);
-            return ResponseEntity.ok(new ApiResponse<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null));
         }
     }
 
