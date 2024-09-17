@@ -52,7 +52,7 @@ services:
       dockerfile: ./pnpm.Dockerfile
     restart: always
     ports:
-      - 4901:4901
+      - 4999:4901
     volumes:
       - ./nodejs:/app
     working_dir: /app
@@ -253,11 +253,12 @@ services:
 
   bff:
     container_name: st_bff
+    hostname: bff
     build:
       context: ./bff
       dockerfile: Dockerfile
     ports:
-      - "4900:4091"
+      - "4901:4901"
     volumes:
       - ./bff/src:/app/src # Mount source code for live updates
       - ./bff/target:/app/target # Mount target directory to persist compiled code
