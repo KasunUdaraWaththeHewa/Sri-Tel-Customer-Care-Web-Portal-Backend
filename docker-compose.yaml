@@ -110,34 +110,34 @@ services:
 
     # entrypoint: ["pnpm", "start"]
     # entrypoint: ["pnpm", "i;"  , "pnpm", "start"]
-    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
+    entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
 
     networks:
       - st_sritel-network
 
-  billingservice:
-    hostname: billingservice
-    container_name: st_billingservice
-    build:
-      context: ./billingService/
-      dockerfile: ./pnpm.Dockerfile
-    restart: always
-    ports:
-      - 4903:4903
-    volumes:
-      - ./billingService:/app
-    working_dir: /app
-    environment:
-      - PORT=4903
-      - MONGODB_URL=mongodb://mongodb-2:27017/billingService
+  # billingservice:
+  #   hostname: billingservice
+  #   container_name: st_billingservice
+  #   build:
+  #     context: ./billingService/
+  #     dockerfile: ./pnpm.Dockerfile
+  #   restart: always
+  #   ports:
+  #     - 4903:4903
+  #   volumes:
+  #     - ./billingService:/app
+  #   working_dir: /app
+  #   environment:
+  #     - PORT=4903
+  #     - MONGODB_URL=mongodb://mongodb-2:27017/billingService
 
-    # command: ["pnpm", "i;" ]
+  #   # command: ["pnpm", "i;" ]
 
-    # entrypoint: ["pnpm", "i" , "&&" , "pnpm", "start"]
-    # start.sh
-    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
-    networks:
-      - st_sritel-network
+  #   # entrypoint: ["pnpm", "i" , "&&" , "pnpm", "start"]
+  #   # start.sh
+  #   entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
+  #   networks:
+  #     - st_sritel-network
 
 
 # Chat Service
@@ -156,7 +156,7 @@ services:
     environment:
       - PORT=4906
       - MONGODB_URL=mongodb://mongodb-chat:27017/chatService  # Environment variable for MongoDB connection
-    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]  # Install dependencies and start the service
+    entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]  # Install dependencies and start the service
     networks:
       - st_sritel-network
 
@@ -177,7 +177,7 @@ services:
     environment:
       - PORT=4904
       - MONGODB_URL=mongodb://mongodb-3:27017/billService
-    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
+    entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
     networks:
       - st_sritel-network
 
@@ -196,7 +196,7 @@ services:
     environment:
       - PORT=4905
       - MONGODB_URL=mongodb://mongodb-4:27017/customerService
-    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
+    entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
     networks:
       - st_sritel-network
 
@@ -216,7 +216,7 @@ services:
     environment:
       - PORT=4909
       - MONGODB_URL=mongodb://mongodb-5:27017/valueAddedService
-    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
+    entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
     networks:
       - st_sritel-network
 
