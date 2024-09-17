@@ -16,3 +16,8 @@ RUN pnpm i
 
 
 RUN pnpm config set store-dir /app/pnpm
+
+
+
+
+
