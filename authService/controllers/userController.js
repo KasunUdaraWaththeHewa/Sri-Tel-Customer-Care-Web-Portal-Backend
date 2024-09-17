@@ -1,9 +1,13 @@
 const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
 const ApiResponse = require("../dto/responseDto");
+const axios = require("axios");
 
 const createToken = (_id, role) => {
-  return jwt.sign({ _id, role }, process.env.JWT_SECRET_KEY, { expiresIn: "3d" });
+  return jwt.sign({ _id, role }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "3d",
+    algorithm: "HS256",
+  });
 };
 
 const loginUser = async (req, res) => {
@@ -11,6 +15,17 @@ const loginUser = async (req, res) => {
 
   try {
     const user = await User.login({ email, password });
+
+    if (user.status === "inactive") {
+      const response = new ApiResponse(
+        false,
+        403,
+        "Account is deactivated. Please activate your account first",
+        null
+      );
+      return res.status(403).json(response);
+    }
+
     const token = createToken(user._id, user.role);
     const response = new ApiResponse(true, 200, "Login successful", {
       email,
@@ -26,8 +41,16 @@ const loginUser = async (req, res) => {
 };
 
 const signupUser = async (req, res) => {
-  const { email, password, fullName, dateOfBirth, phoneNumber, address, nic } =
-    req.body;
+  const {
+    email,
+    password,
+    fullName,
+    dateOfBirth,
+    phoneNumber,
+    address,
+    nic,
+    role,
+  } = req.body;
 
   try {
     const user = await User.signup({
@@ -38,14 +61,32 @@ const signupUser = async (req, res) => {
       phoneNumber,
       address,
       nic,
+      role,
     });
 
     const token = createToken(user._id, user.role);
-    const response = new ApiResponse(true, 200, "Signup successful", {
-      email,
-      token,
-    });
-    res.status(200).json(response);
+
+    const accountPayload = {
+      email: user.email,
+      number: user.phoneNumber,
+      userID: user._id,
+      accountType: "Postpaid",
+      billingInfo: { lastPaymentDate: Date.now(), totalOutstanding: 0 },
+    };
+
+    const customerServiceURL = "http://bff:4901/api/proxy/forward/customer/";
+    const customerResponse = await axios.post(
+      customerServiceURL,
+      accountPayload
+    );
+
+    if (customerResponse.status === true) {
+      const response = new ApiResponse(true, 200, "Signup successful", {
+        email,
+        token,
+      });
+      res.status(200).json(response);
+    }
   } catch (err) {
     const response = new ApiResponse(false, 400, err.message, null);
     res.status(400).json(response);
@@ -285,6 +326,32 @@ const activateAccount = async (req, res) => {
   }
 };
 
+const isInActiveUser = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      const response = new ApiResponse(false, 404, "User not found", null);
+      return res.status(404).json(response);
+    }
+
+    if (user.status === "inactive") {
+      const response = new ApiResponse(true, 200, "User is active", null);
+      return res.status(200).json(response);
+    }
+  } catch (err) {
+    const response = new ApiResponse(
+      false,
+      500,
+      "An error occurred while checking the account status",
+      null
+    );
+    res.status(500).json(response);
+  }
+};
+
 module.exports = {
   signupUser,
   loginUser,
@@ -295,4 +362,5 @@ module.exports = {
   editProfileDetails,
   deactivateAccount,
   activateAccount,
+  isInActiveUser,
 };
