@@ -38,6 +38,7 @@ io.on('connection', (socket) => {
     
     socket.on('sendMessage', async (messageData) => {    
         const { room, message, senderId } = messageData;
+        
     
         // Check if all fields are present
         if (!room || !message || !senderId) {
