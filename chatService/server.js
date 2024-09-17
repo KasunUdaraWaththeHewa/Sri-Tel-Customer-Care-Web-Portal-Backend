@@ -25,7 +25,7 @@ mongoose.connect(process.env.MONGODB_URL, {
 
 // Routes
 const chatRoutes = require('./routes/chatRoutes');
-app.use('/chat', chatRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Socket.IO Setup for real-time communication
 io.on('connection', (socket) => {
