@@ -1,10 +1,18 @@
 const Account = require("../models/Account");
 const ApiResponse = require("../dto/responseDto");
+const { checkExistingUser } = require("../functions/checkExistingUser");
 
 const createAccount = async (req, res) => {
   try {
     const { email, number, accountID, accountType, services, billingInfo } =
       req.body;
+
+    const existingUser = checkExistingUser(email);
+
+    if (!existingUser) {
+      const response = new ApiResponse(false, 404, "User not found.", null);
+      return res.status(404).json(response);
+    }
 
     const newAccount = new Account({
       email,
@@ -29,8 +37,14 @@ const createAccount = async (req, res) => {
 const updateAccount = async (req, res) => {
   const { id } = req.params;
   const updateData = req.body;
-
+  const { email } = updateData;
   try {
+    const existingUser = checkExistingUser(email);
+
+    if (!existingUser) {
+      const response = new ApiResponse(false, 404, "User not found.", null);
+      return res.status(404).json(response);
+    }
     const updatedAccount = await Account.findByIdAndUpdate(id, updateData, {
       new: true,
     });
@@ -60,6 +74,13 @@ const activateAccount = async (req, res) => {
   const { email } = req.params;
 
   try {
+    const existingUser = checkExistingUser(email);
+
+    if (!existingUser) {
+      const response = new ApiResponse(false, 404, "User not found.", null);
+      return res.status(404).json(response);
+    }
+
     const account = await Account.findOne({ email });
 
     if (!account) {
@@ -89,6 +110,13 @@ const deactivateAccount = async (req, res) => {
   const { email } = req.params;
 
   try {
+    const existingUser = checkExistingUser(email);
+
+    if (!existingUser) {
+      const response = new ApiResponse(false, 404, "User not found.", null);
+      return res.status(404).json(response);
+    }
+
     const account = await Account.findOne({ email });
 
     if (!account) {
@@ -120,6 +148,13 @@ const suspendAccount = async (req, res) => {
   const { email } = req.params;
 
   try {
+    const existingUser = checkExistingUser(email);
+
+    if (!existingUser) {
+      const response = new ApiResponse(false, 404, "User not found.", null);
+      return res.status(404).json(response);
+    }
+
     const account = await Account.findOne({ email });
 
     if (!account) {
@@ -151,6 +186,13 @@ const getAllAccountsForCustomer = async (req, res) => {
   const { email } = req.params;
 
   try {
+    const existingUser = checkExistingUser(email);
+
+    if (!existingUser) {
+      const response = new ApiResponse(false, 404, "User not found.", null);
+      return res.status(404).json(response);
+    }
+
     const accounts = await Account.find({ email: email });
 
     if (!accounts.length) {
