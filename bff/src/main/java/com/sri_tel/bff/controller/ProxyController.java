@@ -204,7 +204,13 @@ public class ProxyController {
     private ResponseEntity<?> forwardRequestWithToken(
             String backendUrl, String token, Object body, HttpMethod method) {
 
-        // First, validate the token
+        // Check if token is missing
+        if (token == null || token.isEmpty()) {
+            logger.error("Token is missing");
+            return ResponseEntity.ok(new ApiResponse<>(false, HttpStatus.UNAUTHORIZED.value(), "Authorization token is missing", null));
+        }
+
+        // Validate the token
         if (!validateToken(token)) {
             return ResponseEntity.ok(new ApiResponse<>(false, HttpStatus.UNAUTHORIZED.value(), "Invalid token", null));
         }
