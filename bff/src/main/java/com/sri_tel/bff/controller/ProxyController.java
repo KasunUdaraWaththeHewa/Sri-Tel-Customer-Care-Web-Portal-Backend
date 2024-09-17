@@ -73,7 +73,7 @@ public class ProxyController {
     // Forward GET Requests
     @GetMapping("/forward/**")
     public ResponseEntity<?> forwardGetRequest(
-            @RequestHeader("Authorization") String token,
+            @RequestHeader(value = "Authorization", required = false) String token,
             HttpServletRequest request) {
 
         String requestUri = request.getRequestURI().replace("/api/proxy/forward", "");
@@ -94,7 +94,7 @@ public class ProxyController {
     // Forward POST Requests
     @PostMapping("/forward/**")
     public ResponseEntity<?> forwardPostRequest(
-            @RequestHeader("Authorization") String token,
+            @RequestHeader(value = "Authorization", required = false) String token,
             @RequestBody Map<String, Object> requestBody,
             HttpServletRequest request) {
 
@@ -116,7 +116,7 @@ public class ProxyController {
     // Forward PUT Requests
     @PutMapping("/forward/**")
     public ResponseEntity<?> forwardPutRequest(
-            @RequestHeader("Authorization") String token,
+            @RequestHeader(value = "Authorization", required = false) String token,
             @RequestBody Map<String, Object> requestBody,
             HttpServletRequest request) {
 
@@ -138,7 +138,7 @@ public class ProxyController {
     // Forward DELETE Requests
     @DeleteMapping("/forward/**")
     public ResponseEntity<?> forwardDeleteRequest(
-            @RequestHeader("Authorization") String token,
+            @RequestHeader(value = "Authorization", required = false) String token,
             HttpServletRequest request) {
 
         String requestUri = request.getRequestURI().replace("/api/proxy/forward", "");
@@ -159,7 +159,7 @@ public class ProxyController {
     // Forward PATCH Requests
     @PatchMapping("/forward/**")
     public ResponseEntity<?> forwardPatchRequest(
-            @RequestHeader("Authorization") String token,
+            @RequestHeader(value = "Authorization", required = false) String token,
             @RequestBody Map<String, Object> requestBody,
             HttpServletRequest request) {
 
