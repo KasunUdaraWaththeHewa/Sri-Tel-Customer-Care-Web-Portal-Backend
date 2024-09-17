@@ -253,6 +253,7 @@ services:
 
   bff:
     container_name: st_bff
+    hostname: bff
     build:
       context: ./bff
       dockerfile: Dockerfile
