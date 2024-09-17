@@ -17,4 +17,4 @@ const DataPackageSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("DataPackage", DataPackageSchema);
+module.exports = mongoose.model("DataPackages", DataPackageSchema);
