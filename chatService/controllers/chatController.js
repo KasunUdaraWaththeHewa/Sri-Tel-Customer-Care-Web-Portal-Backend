@@ -1,4 +1,6 @@
-const Chat = require('../models/ChatModel');
+const ApiResponse = require("../dto/responseDto");
+const Chat = require('../models/ChatModel'); // Correct the path to your model if necessary
+
 
 // Get chat history by roomId
 const getChatHistory = async (req, res) => {
