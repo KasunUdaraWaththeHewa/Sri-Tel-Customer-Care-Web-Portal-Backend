@@ -1,4 +1,6 @@
-const Chat = require('../models/ChatModel');
+const ApiResponse = require("../dto/responseDto");
+const Chat = require('../models/ChatModel'); // Correct the path to your model if necessary
+
 
 // Get chat history by roomId
 const getChatHistory = async (req, res) => {
@@ -6,9 +8,11 @@ const getChatHistory = async (req, res) => {
     
     try {
         const chatHistory = await Chat.find({ room: roomId }).sort({ createdAt: 1 });
-        res.status(200).json(chatHistory);
+        const response = new ApiResponse(true, 200, 'Chat history fetched successfully', chatHistory);
+        res.status(200).json(response);
     } catch (err) {
-        res.status(500).json({ error: 'Unable to fetch chat history' });
+        const response = new ApiResponse(false, 500, 'Unable to fetch chat history', null);
+        res.status(500).json(response);
     }
 };
 
@@ -25,9 +29,11 @@ const postMessage = async (req, res) => {
         });
 
         await newMessage.save();
-        res.status(201).json(newMessage);
+        const response = new ApiResponse(true, 201, 'Message posted successfully', newMessage);
+        res.status(201).json(response);
     } catch (err) {
-        res.status(500).json({ error: 'Failed to post message' });
+        const response = new ApiResponse(false, 500, 'Failed to post message', null);
+        res.status(500).json(response);
     }
 };
 
