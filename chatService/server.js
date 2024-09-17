@@ -5,7 +5,7 @@ const socketIO = require('socket.io');
 const cors = require('cors');
 require('dotenv').config();
 
-const Chat = require('../models/ChatModel'); // Correct the path to your model if necessary
+const Chat = require('./models/ChatModel'); // Correct the path to your model if necessary
 
 const app = express();
 const server = http.createServer(app);
