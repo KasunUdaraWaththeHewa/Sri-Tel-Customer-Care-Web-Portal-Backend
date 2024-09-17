@@ -1,6 +1,7 @@
 const SubscriptionVAS = require("../models/SubscriptionBased");
 const Subscription = require("../models/Subscription");
 const ApiResponse = require("../dto/responseDto");
+const { checkExistingAccount } = require("../function/checkExistingAccount");
 
 const calculateExpiryDate = (days) => {
   const now = new Date();
@@ -11,6 +12,13 @@ const calculateExpiryDate = (days) => {
 const activateSubscription = async (req, res) => {
   const { accountID, email, subscriptionId } = req.body;
   try {
+    const existingAccount = checkExistingAccount(accountID);
+
+    if (!existingAccount) {
+      const response = new ApiResponse(false, 404, "Account not found.", null);
+      return res.status(404).json(response);
+    }
+
     const subscription = await Subscription.findById(subscriptionId);
     if (!subscription) {
       const response = new ApiResponse(

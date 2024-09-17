@@ -1,5 +1,6 @@
 const DataTopUp = require("../models/DataTopUp");
 const ApiResponse = require("../dto/responseDto");
+const { checkExistingAccount } = require("../function/checkExistingAccount");
 
 const calculateExpiryDate = (days) => {
   const now = new Date();
@@ -9,6 +10,12 @@ const calculateExpiryDate = (days) => {
 
 const topUpData = async (req, res) => {
   const { accountID, email, dataAmount, durationInDays } = req.body;
+  const existingAccount = checkExistingAccount(accountID);
+
+    if (!existingAccount) {
+      const response = new ApiResponse(false, 404, "Account not found.", null);
+      return res.status(404).json(response);
+    }
 
   try {
     const expiryDate = durationInDays

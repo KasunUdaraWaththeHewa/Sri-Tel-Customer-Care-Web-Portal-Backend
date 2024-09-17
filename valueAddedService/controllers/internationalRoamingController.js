@@ -1,10 +1,18 @@
 const InternationalRoaming = require("../models/InternationalRoaming");
 const ApiResponse = require("../dto/responseDto");
+const { checkExistingAccount } = require("../function/checkExistingAccount");
 
 const activateRoaming = async (req, res) => {
   const { email, accountID } = req.body;
 
   try {
+    const existingAccount = checkExistingAccount(accountID);
+
+    if (!existingAccount) {
+      const response = new ApiResponse(false, 404, "Account not found.", null);
+      return res.status(404).json(response);
+    }
+    
     let roaming = await InternationalRoaming.findOne({ accountID });
 
     if (roaming) {
