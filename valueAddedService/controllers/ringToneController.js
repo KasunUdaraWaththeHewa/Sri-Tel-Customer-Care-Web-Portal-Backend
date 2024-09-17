@@ -1,4 +1,4 @@
-const RingTone = require("../models/RingTone");
+const RingTone = require("../models/RignTone");
 const ApiResponse = require("../dto/responseDto");
 const { checkExistingAccount } = require("../function/checkExistingAccount");
 

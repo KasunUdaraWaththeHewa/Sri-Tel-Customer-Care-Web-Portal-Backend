@@ -1,6 +1,6 @@
 const express =require('express');
 
-const {signupUser, loginUser,changePassword} = require('../controllers/userController');
+const {signupUser, loginUser,changePassword, forgotPassword , resetPassword , getProfileDetails , editProfileDetails , deactivateAccount, activateAccount , isInActiveUser } = require('../controllers/userController');
 
 const router = express.Router();
 
@@ -21,5 +21,7 @@ router.put('/editProfileDetails', editProfileDetails);
 router.put('/deactivateAccount', deactivateAccount);
 
 router.put('/activateAccount', activateAccount);
+
+router.post('/isInActiveUser', isInActiveUser);
 
 module.exports = router;
