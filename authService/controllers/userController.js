@@ -41,8 +41,6 @@ const loginUser = async (req, res) => {
 };
 
 const signupUser = async (req, res) => {
-  console.log("Signup user controller called");
-  console.log(req.body);
   const {
     email,
     password,
@@ -53,7 +51,6 @@ const signupUser = async (req, res) => {
     nic,
     role,
   } = req.body;
-
   try {
     const user = await User.signup({
       email,
@@ -65,7 +62,6 @@ const signupUser = async (req, res) => {
       nic,
       role,
     });
-
     const token = createToken(user._id, user.role);
 
     const accountPayload = {
@@ -79,8 +75,15 @@ const signupUser = async (req, res) => {
     const customerServiceURL = "http://bff:4901/api/proxy/forward/customer/";
     const customerResponse = await axios.post(
       customerServiceURL,
-      accountPayload
+      accountPayload,
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
     );
+
+    console.log(customerResponse);
 
     if (customerResponse.status === true) {
       const response = new ApiResponse(true, 200, "Signup successful", {
