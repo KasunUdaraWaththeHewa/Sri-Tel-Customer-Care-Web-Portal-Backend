@@ -20,11 +20,8 @@ const userSchema = new Schema({
   },
   dateOfBirth: {
     type: Date,
-    required: false,
     validate: {
-      validator: function (v) {
-        return v && v instanceof Date && v <= new Date();
-      },
+      validator: (v) => !v || v <= new Date(),
       message: "Invalid or future date for date of birth.",
     },
   },
@@ -76,7 +73,6 @@ const userSchema = new Schema({
   },
 });
 
-
 // Signup Method
 userSchema.statics.signup = async function ({
   email,
@@ -88,6 +84,7 @@ userSchema.statics.signup = async function ({
   address,
   nic,
 }) {
+
   // Validation for mandatory fields
   if (!email || !password || !fullName) {
     throw Error("Email, password, and full name are required.");
@@ -98,12 +95,12 @@ userSchema.statics.signup = async function ({
     throw Error("Invalid email format.");
   }
 
-  // Password strength check
-  if (!validator.isStrongPassword(password)) {
-    throw Error(
-      "Password is not strong enough. It must include uppercase, lowercase, numbers, and special characters."
-    );
-  }
+  // // Password strength check
+  // if (!validator.isStrongPassword(password)) {
+  //   throw Error(
+  //     "Password is not strong enough. It must include uppercase, lowercase, numbers, and special characters."
+  //   );
+  // }
 
   // Check if email already exists
   const exists = await this.findOne({ email });
@@ -126,7 +123,7 @@ userSchema.statics.signup = async function ({
     nic,
     role,
   });
-
+  
   return user;
 };
 
@@ -192,7 +189,7 @@ userSchema.statics.forgotPassword = async function (email) {
     throw new Error("No account with that email found.");
   }
 
-  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetToken = crypto.randomBytes(32).toString("hex");
   user.resetToken = resetToken;
   user.resetTokenExpires = Date.now() + 3600000; // 1 hour expiration
 
