@@ -338,7 +338,7 @@ services:
     hostname: mongodb-4
     image: mongo:latest
     ports:
-      - "4944:27017"
+      - "4946:27017"
     networks:
       - st_sritel-network
 
