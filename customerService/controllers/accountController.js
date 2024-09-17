@@ -218,6 +218,26 @@ const getAllAccountsForCustomer = async (req, res) => {
   }
 };
 
+const getAllAccounts = async (req, res) => {
+  try {
+    const accounts = await Account.find();
+
+    if (!accounts.length) {
+      return res
+        .status(404)
+        .json(new ApiResponse(false, 404, "No accounts found", null));
+    }
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(true, 200, "Accounts retrieved successfully", accounts)
+      );
+  } catch (error) {
+    res.status(400).json(new ApiResponse(false, 400, error.message, null));
+  }
+};
+
 const getAccountDetails = async (req, res) => {
   const { accountID } = req.params;
 
@@ -269,4 +289,5 @@ module.exports = {
   getAllAccountsForCustomer,
   getAccountDetails,
   isExistingAccount,
+  getAllAccounts,
 };
