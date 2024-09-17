@@ -181,6 +181,45 @@ services:
     networks:
       - st_sritel-network
 
+  customerservice:
+    hostname: customerservice
+    container_name: st_customerservice
+    build:
+      context: ./customerService/
+      dockerfile: ./pnpm.Dockerfile
+    restart: always
+    ports:
+      - 4905:4905
+    volumes:
+      - ./customerService:/app
+    working_dir: /app
+    environment:
+      - PORT=4905
+      - MONGODB_URL=mongodb://mongodb-4:27017/customerService
+    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
+    networks:
+      - st_sritel-network
+
+  # Value Added Service
+  valueaddedservice:
+    hostname: valueaddedservice
+    container_name: st_valueaddedservice
+    build:
+      context: ./valueAddedService/
+      dockerfile: ./pnpm.Dockerfile
+    restart: always
+    ports:
+      - 4909:4909
+    volumes:
+      - ./valueAddedService:/app
+    working_dir: /app
+    environment:
+      - PORT=4909
+      - MONGODB_URL=mongodb://mongodb-5:27017/valueAddedService
+    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
+    networks:
+      - st_sritel-network
+
   # Upload Service
 
   uploadservice:
@@ -291,6 +330,24 @@ services:
     image: mongo:latest
     ports:
       - "4943:27017"
+    networks:
+      - st_sritel-network
+
+  mongodb-4:
+    container_name: st_mongodb-4
+    hostname: mongodb-4
+    image: mongo:latest
+    ports:
+      - "4944:27017"
+    networks:
+      - st_sritel-network
+
+  mongodb-5:
+    container_name: st_mongodb-5
+    hostname: mongodb-5
+    image: mongo:latest
+    ports:
+      - "4945:27017"
     networks:
       - st_sritel-network
 
