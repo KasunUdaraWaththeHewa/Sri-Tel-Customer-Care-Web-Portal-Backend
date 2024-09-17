@@ -1,13 +1,14 @@
 const Account = require("../models/Account");
 const ApiResponse = require("../dto/responseDto");
 const { checkExistingUser } = require("../functions/checkExistingUser");
+const {captureToken} = require("../functions/captureToken");
 
 const createAccount = async (req, res) => {
   try {
-    console.log(req.body);
     const { email, number, userID, accountType, billingInfo } = req.body;
-
-    const existingUser = checkExistingUser(email);
+    const token = captureToken(req);
+    const existingUser = checkExistingUser(email, token);
+    console.log(existingUser);
 
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
