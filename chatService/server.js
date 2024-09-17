@@ -35,24 +35,32 @@ io.on('connection', (socket) => {
         socket.join(room);
         console.log(`${socket.id} joined room ${room}`);
     });
-
-    socket.on('sendMessage', async (messageData) => {
-        const { room, message, senderId } = messageData; // Ensure senderId is included in the message data
-
+    
+    socket.on('sendMessage', async (messageData) => {    
+        const { room, message, senderId } = messageData;
+    
+        // Check if all fields are present
+        if (!room || !message || !senderId) {
+            console.error('Invalid message data, missing fields');
+            return;
+        }
+    
         // Save message to the database
         const newMessage = new Chat({
             room,
             message,
             senderId
         });
-
+    
         try {
             await newMessage.save();  // Save message to MongoDB
             io.to(room).emit('receiveMessage', message);  // Broadcast message to the room
+            console.log('Message saved and emitted:', message);  // Log successful save
         } catch (err) {
-            console.error('Failed to save message:', err);
+            console.error('Failed to save message:', err);  // Log any errors during save
         }
     });
+    
 
     socket.on('disconnect', () => {
         console.log('Client disconnected:', socket.id);
