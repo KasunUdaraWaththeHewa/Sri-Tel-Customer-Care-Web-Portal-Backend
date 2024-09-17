@@ -26,11 +26,9 @@ const AccountSchema = new Schema({
       message: (props) => `${props.value} is not a valid account number!`,
     },
   },
-  accountID: {
+  userID: {
     type: String,
-    required: [true, "Account ID is required"],
-    unique: true,
-    trim: true,
+    required: [true, "User ID is required"],
   },
   accountType: {
     type: String,
@@ -42,23 +40,6 @@ const AccountSchema = new Schema({
     enum: ["Active", "Inactive", "Suspended"],
     default: "Active",
   },
-  services: [
-    {
-      serviceID: {
-        type: String,
-        required: [true, "Service ID is required"],
-      },
-      serviceName: {
-        type: String,
-        required: [true, "Service name is required"],
-      },
-      activationDate: {
-        type: Date,
-        required: [true, "Activation date is required"],
-      },
-      deactivationDate: Date,
-    },
-  ],
   billingInfo: {
     lastPaymentDate: {
       type: Date,
