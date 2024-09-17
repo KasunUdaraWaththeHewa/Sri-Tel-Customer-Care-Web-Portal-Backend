@@ -26,7 +26,7 @@ connection.once("open",()=>{
 })
 
 const accountRoutes=require("./routes/accountRoutes.js");
-app.use("/accounts",accountRoutes);
+app.use("/api/customer",accountRoutes);
 
 
 
