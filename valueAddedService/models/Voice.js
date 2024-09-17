@@ -13,6 +13,7 @@ const VoiceSchema = new mongoose.Schema(
       lowercase: true,
     },
     voiceMinutes: { type: Number, required: true }, // Minutes of voice usage
+    price: { type: Number, required: true },
     activationDate: { type: Date, default: Date.now },
     deactivatedDate: { type: Date },
     expiryDate: { type: Date },

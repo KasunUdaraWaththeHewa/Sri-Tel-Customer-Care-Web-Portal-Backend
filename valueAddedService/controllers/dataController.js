@@ -9,7 +9,7 @@ const calculateExpiryDate = (days) => {
 };
 
 const activateData = async (req, res) => {
-  const { accountID, email, dataAmount } = req.body;
+  const { accountID, email, dataAmount, price, durationInDays } = req.body;
   try {
     const existingData = await Data.findOne({ accountID, email });
     const existingAccount = checkExistingAccount(accountID);
@@ -49,8 +49,9 @@ const activateData = async (req, res) => {
         accountID,
         email,
         dataAmount,
+        price,
         activationDate: Date.now(),
-        expiryDate: calculateExpiryDate(30),
+        expiryDate: calculateExpiryDate(durationInDays),
       });
       await newData.save();
 

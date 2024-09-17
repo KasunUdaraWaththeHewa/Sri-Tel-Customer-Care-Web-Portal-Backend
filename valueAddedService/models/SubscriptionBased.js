@@ -17,6 +17,10 @@ const SubscriptionVASchema = new mongoose.Schema(
       ref: "Subscription",
       required: true,
     },
+    price: {
+      type: Number,
+      required: true,
+    },
     isActive: {
       type: Boolean,
       default: false,
