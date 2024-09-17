@@ -41,6 +41,8 @@ const loginUser = async (req, res) => {
 };
 
 const signupUser = async (req, res) => {
+  console.log("Signup user controller called");
+  console.log(req.body);
   const {
     email,
     password,
