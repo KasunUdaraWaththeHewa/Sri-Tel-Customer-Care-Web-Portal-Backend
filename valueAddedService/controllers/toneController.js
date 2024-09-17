@@ -1,4 +1,4 @@
-const ToneCatalog = require("../models/ToneCatalog");
+const ToneCatalog = require("../models/ToneCatelog");
 
 const getAvailableTones = async (req, res) => {
   try {
