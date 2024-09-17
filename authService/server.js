@@ -26,7 +26,7 @@ connection.once("open", () => {
 });
 
 const userRoutes = require("./routes/user.js");
-app.use("/api/auth", userRoutes);
+app.use("/api/user", userRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is up and running on port: ${PORT}`);
