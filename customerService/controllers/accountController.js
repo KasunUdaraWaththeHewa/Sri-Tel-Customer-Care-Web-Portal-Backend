@@ -198,6 +198,26 @@ const getAccountDetails = async (req, res) => {
   }
 };
 
+const isExistingAccount = async (req, res) => {
+  const { accountID } = req.params;
+
+  try {
+    const account = await Account.findOne({ accountID });
+    if (!account) {
+      return res
+        .status(404)
+        .json(new ApiResponse(false, 404, "Account not found", null));
+    }
+    res
+      .status(200)
+      .json(
+        new ApiResponse(true, 200, "Account retrieved successfully", account)
+      );
+  } catch (error) {
+    res.status(400).json(new ApiResponse(false, 400, error.message, null));
+  }
+};
+
 module.exports = {
   createAccount,
   updateAccount,
@@ -206,4 +226,5 @@ module.exports = {
   suspendAccount,
   getAllAccountsForCustomer,
   getAccountDetails,
+  isExistingAccount,
 };

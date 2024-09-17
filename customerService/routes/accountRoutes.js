@@ -9,5 +9,6 @@ router.post("/deactivate/:email", accountController.deactivateAccount);
 router.post("/suspend/:email", accountController.suspendAccount);
 router.get("/customer/:email", accountController.getAllAccountsForCustomer);
 router.get("/:accountID", accountController.getAccountDetails);
+router.get("/check/:accountID", accountController.isExistingAccount);
 
 module.exports = router;
