@@ -27,27 +27,27 @@ connection.once("open", () => {
 });
 
 const dataTopUpRoutes = require("./routes/dataTopUpRoutes");
-app.use("/valueAdded/data", dataTopUpRoutes);
+app.use("/api/value-added/data", dataTopUpRoutes);
 const internationalRoamingRoutes = require("./routes/internationalRoamingRoutes");
-app.use("/valueAdded/roaming", internationalRoamingRoutes);
+app.use("/api/value-added/roaming", internationalRoamingRoutes);
 const ringToneRoutes = require("./routes/ringToneRoutes");
-app.use("/valueAdded/ringtone", ringToneRoutes);
+app.use("/api/value-added/ringtone", ringToneRoutes);
 const subscriptionBasedRoutes = require("./routes/subscriptionBasedRoutes");
-app.use("/valueAdded/subscription", subscriptionBasedRoutes);
+app.use("/api/value-added/subscription", subscriptionBasedRoutes);
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
-app.use("/valueAdded/subscriptionPackages", subscriptionRoutes);
+app.use("/api/value-added/subscriptionPackages", subscriptionRoutes);
 const toneCatalogRoutes = require("./routes/toneRoutes");
-app.use("/valueAdded/toneCatalog", toneCatalogRoutes);
+app.use("/api/value-added/toneCatalog", toneCatalogRoutes);
 const dataTopUpPackageRoutes = require("./routes/dataTopUpPackageRoutes");
-app.use("/valueAdded/dataTopUpPackages", dataTopUpPackageRoutes);
+app.use("/api/value-added/dataTopUpPackages", dataTopUpPackageRoutes);
 const dataRoutes = require("./routes/dataRoutes");
-app.use("/packages/dataCatelog", dataRoutes);
+app.use("/api/value-added/dataCatelog", dataRoutes);
 const voiceRoutes = require("./routes/voiceRoutes");
-app.use("/packages/voiceCatelog", voiceRoutes);
+app.use("/api/value-added/voiceCatelog", voiceRoutes);
 const dataPackageRoutes = require("./routes/dataPackageRoutes");
-app.use("/packages/dataPackages", dataPackageRoutes);
+app.use("/api/value-added/dataPackages", dataPackageRoutes);
 const voicePackageRoutes = require("./routes/voicePackageRoutes");
-app.use("/packages/voicePackages", voicePackageRoutes);
+app.use("/api/value-added/voicePackages", voicePackageRoutes);
 
 schedule();
 
