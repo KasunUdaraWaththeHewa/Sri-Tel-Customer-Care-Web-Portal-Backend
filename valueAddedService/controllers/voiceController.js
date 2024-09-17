@@ -9,7 +9,7 @@ const calculateExpiryDate = (days) => {
 };
 
 const activateVoice = async (req, res) => {
-  const { accountID, email, voiceMinutes } = req.body;
+  const { accountID, email, voiceMinutes, price, durationInDays } = req.body;
 
   try {
     const existingAccount = checkExistingAccount(accountID);
@@ -39,8 +39,9 @@ const activateVoice = async (req, res) => {
         accountID,
         email,
         voiceMinutes,
+        price,
         activationDate: Date.now(),
-        expiryDate: calculateExpiryDate(30),
+        expiryDate: calculateExpiryDate(durationInDays),
       });
       await newVoice.save();
       
