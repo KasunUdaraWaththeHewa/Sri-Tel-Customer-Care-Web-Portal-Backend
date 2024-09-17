@@ -5,7 +5,7 @@ RUN npm install -g pnpm
 
 # Set pnpm 
 
-COPY . /app/
+COPY package.json /app/package.json
 
 ENV PNPM_HOME="./pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -16,8 +16,3 @@ RUN pnpm i
 
 
 RUN pnpm config set store-dir /app/pnpm
-
-
-
-
-
