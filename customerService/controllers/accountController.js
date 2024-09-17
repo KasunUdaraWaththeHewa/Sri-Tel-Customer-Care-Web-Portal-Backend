@@ -4,8 +4,8 @@ const { checkExistingUser } = require("../functions/checkExistingUser");
 
 const createAccount = async (req, res) => {
   try {
-    const { email, number, accountID, accountType, services, billingInfo } =
-      req.body;
+    console.log(req.body);
+    const { email, number, userID, accountType, billingInfo } = req.body;
 
     const existingUser = checkExistingUser(email);
 
@@ -17,18 +17,19 @@ const createAccount = async (req, res) => {
     const newAccount = new Account({
       email,
       number,
-      accountID,
+      userID,
       accountType,
-      services,
       billingInfo,
     });
 
     await newAccount.save();
-    res
-      .status(201)
-      .json(
-        new ApiResponse(true, 201, "Account created successfully", newAccount)
-      );
+    const response = new ApiResponse(
+      true,
+      201,
+      "Account created successfully",
+      newAccount
+    );
+    res.status(201).json(response);
   } catch (error) {
     res.status(400).json(new ApiResponse(false, 400, error.message, null));
   }
@@ -264,7 +265,7 @@ const isExistingAccount = async (req, res) => {
   const { accountID } = req.params;
 
   try {
-    const account = await Account.findOne({ accountID });
+    const account = await Account.findById({ accountID });
     if (!account) {
       return res
         .status(404)

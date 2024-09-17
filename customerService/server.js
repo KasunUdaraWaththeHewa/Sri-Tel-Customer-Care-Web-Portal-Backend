@@ -6,10 +6,9 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT;
 const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true, //access-control-allow-credentials:true
+    origin: '"http://bff:4901","http://localhost:4901"',
+    credentials: true, //access-control-allow-credentials:true
 };
-
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
