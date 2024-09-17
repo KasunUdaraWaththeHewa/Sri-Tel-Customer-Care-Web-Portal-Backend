@@ -71,7 +71,7 @@ const signupUser = async (req, res) => {
       accountType: "Postpaid",
       billingInfo: { lastPaymentDate: Date.now(), totalOutstanding: 0 },
     };
-
+    //works until this api call
     const customerServiceURL = "http://bff:4901/api/proxy/forward/customer/";
     const customerResponse = await axios.post(
       customerServiceURL,
@@ -157,10 +157,13 @@ const resetPassword = async (req, res) => {
 };
 
 const getProfileDetails = async (req, res) => {
+  console.log("Get Profile Details Called");
   const { email } = req.body;
+  console.log(email);
 
   try {
     const user = await User.findOne({ email });
+    console.log(user);
 
     if (!user) {
       const response = new ApiResponse(false, 404, "User not found", null);

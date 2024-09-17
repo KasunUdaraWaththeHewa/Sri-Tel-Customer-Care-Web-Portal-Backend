@@ -123,7 +123,7 @@ userSchema.statics.signup = async function ({
     nic,
     role,
   });
-  
+
   return user;
 };
 
