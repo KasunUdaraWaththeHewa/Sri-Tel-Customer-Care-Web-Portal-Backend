@@ -20,7 +20,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
+          cpus: "1.0"
           memory: 1024M
     networks:
       - st_sritel-network
@@ -38,17 +38,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
+          cpus: "1.0"
           memory: 1024M
     networks:
       - st_sritel-network
 
-
-# Test Service
+  # Test Service
   nodejs:
     hostname: backend
     container_name: st_backend
-    build: 
+    build:
       context: ./nodejs/
       dockerfile: ./pnpm.Dockerfile
     restart: always
@@ -66,14 +65,13 @@ services:
     entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
 
     networks:
-      - st_sritel-network  
+      - st_sritel-network
 
-
-# Notification Service
+  # Notification Service
   notification:
     hostname: notification
     container_name: st_notification
-    build: 
+    build:
       context: ./notification/
       dockerfile: ./pnpm.Dockerfile
     restart: always
@@ -91,11 +89,10 @@ services:
     networks:
       - st_sritel-network
 
-
   authservice:
     hostname: authservice
     container_name: st_authservice
-    build: 
+    build:
       context: ./authService/
       dockerfile: ./pnpm.Dockerfile
     restart: always
@@ -107,6 +104,7 @@ services:
     environment:
       - PORT=4907
       - MONGODB_URL=mongodb://mongodb-1:27017/authService
+      - JWT_SECRET_KEY=M5vH+hjjkkPdcuB4EI7EuVgQrq9hSOZ6w3/rYFtE0tUaSGh6A+aWV/qc0i9mebYr0bnatT6Bvllwx/HizXvj6Q==
 
     # command: ["pnpm", "i;" ]
 
@@ -114,14 +112,13 @@ services:
     # entrypoint: ["pnpm", "i;"  , "pnpm", "start"]
     entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
 
-
     networks:
       - st_sritel-network
 
   billingservice:
     hostname: billingservice
     container_name: st_billingservice
-    build: 
+    build:
       context: ./billingService/
       dockerfile: ./pnpm.Dockerfile
     restart: always
@@ -141,6 +138,7 @@ services:
     entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
     networks:
       - st_sritel-network
+
 
 # Chat Service
   chatservice:
@@ -162,8 +160,32 @@ services:
     networks:
       - st_sritel-network
 
-# Upload Service
+
+
+  bill-service:
+    hostname: bill-service
+    container_name: st_bill-service
+    build:
+      context: ./bill-service/
+      dockerfile: ./pnpm.Dockerfile
+    restart: always
+    ports:
+      - 4904:4904
+    volumes:
+      - ./bill-service:/app
+    working_dir: /app
+    environment:
+      - PORT=4904
+      - MONGODB_URL=mongodb://mongodb-3:27017/billService
+    entrypoint: ["sh", "-c", "pnpm i && pnpm start"]
+    networks:
+      - st_sritel-network
+
+  # Upload Service
+
   uploadservice:
+    hostname: uploadservice
+    container_name: st_uploadservice
     build:
       context: ./uploadService
       dockerfile: ./Dockerfile
@@ -178,8 +200,7 @@ services:
     networks:
       - st_sritel-network
 
-
-# File Server 
+  # File Server
 
   fileserver:
     image: nginx:latest
@@ -191,31 +212,31 @@ services:
     restart: unless-stopped
 
 
-
-
-
   bff:
     container_name: st_bff
     build:
       context: ./bff
       dockerfile: Dockerfile
-      # dockerfile: gradle.Dockerfile
     ports:
       - "4900:4091"
     volumes:
-      - ./bff/src:/app/src  # Mount source code for live updates
-      - ./bff/target:/app/target  # Mount target directory to persist compiled code
-    # environment:
-    #   - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-
-
+      - ./bff/src:/app/src # Mount source code for live updates
+      - ./bff/target:/app/target # Mount target directory to persist compiled code
+    environment:
+      # - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - CORE_NOTIFICATION_SERVICE_URL=http://notification:4902/api/notification
+      - CORE_BILLING_SERVICE_URL=http://billingservice:4903/api/billing
+      - CORE_PAYMENT_SERVICE_URL=http://paymentservice:4904/api/payment
+      - CORE_CUSTOMER_SERVICE_URL=http://customerservice:4905/api/customer
+      - CORE_CHAT_SERVICE_URL=http://chatservice:4906/api/chat
+      - CORE_AUTH_SERVICE_URL=http://authservice:4907/api/auth
+      - CORE_UPLOAD_SERVICE_URL=http://uploadservice:4908/api/upload
+      - CORE_VALUE_ADDED_SERVICE_URL=http://localhost:4909/api/value-added
+      - SERVER_PORT=4901
+      - JWT_SECRET_KEY=M5vH+hjjkkPdcuB4EI7EuVgQrq9hSOZ6w3/rYFtE0tUaSGh6A+aWV/qc0i9mebYr0bnatT6Bvllwx/HizXvj6Q==
     command: mvn spring-boot:run
-    # command: "./gradlew bootRun --continuous"
-    # command: "./gradlew bootRun --continuous -Dorg.gradle.daemon=false -Dorg.gradle.unsafe.polling=true"
-
     networks:
       - st_sritel-network
-
 
   postgres-1:
     image: postgres:16-alpine
@@ -233,7 +254,7 @@ services:
     networks:
       - st_sritel-network
 
-# Auth Service DB
+  # Auth Service DB
   mongodb-1:
     container_name: st_mongodb-1
     hostname: mongodb-1
@@ -243,9 +264,7 @@ services:
     networks:
       - st_sritel-network
 
-
-
-# Billing Service DB
+  # Billing Service DB
   mongodb-2:
     container_name: st_mongodb-2
     hostname: mongodb-2
@@ -255,19 +274,27 @@ services:
     networks:
       - st_sritel-network
 
+
 # Chat Service MongoDB
   mongodb-chat:
     container_name: st_mongodb_chat
     hostname: mongodb-chat
     image: mongo:latest
     ports:
-      - "4943:27017"  # Mapping MongoDB port for chat service
+      - "4944:27017"  # Mapping MongoDB port for chat service
     networks:
       - st_sritel-network
 
+  mongodb-3:
+    container_name: st_mongodb-3
+    hostname: mongodb-3
+    image: mongo:latest
+    ports:
+      - "4943:27017"
+    networks:
+      - st_sritel-network
 
-
-# Mail Service
+  # Mail Service
   mail:
     container_name: st_mail
     hostname: mail
@@ -278,12 +305,9 @@ services:
     networks:
       - st_sritel-network
 
-
-
 networks:
   st_sritel-network:
     driver: bridge
-
 
 volumes:
   st_upload:
