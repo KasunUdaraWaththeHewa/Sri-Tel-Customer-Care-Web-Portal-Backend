@@ -2,22 +2,20 @@ const axios = require("axios");
 
 const checkExistingUser = async (email, token) => {
   try {
-    console.log(token);
     //hari token eka capture krgnn one. eka hari giyoth wade hari yawi
-    const authServiceUrl = `http://localhost:4901/api/proxy/forward/user/getProfileDetails/${email}`;
+    const authServiceUrl = `http://bff:4901/api/proxy/forward/user/getProfileDetails/${email}`;
 
     const authResponse = await axios.post(
       authServiceUrl,
       { email },
       {
         headers: {
-          Authorization: token,
+          // Authorization: token,
+          Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmU5YjRlYzM1ZDYwNDA2NDFkMzk0YWIiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MjY1OTIyODYsImV4cCI6MTcyNjg1MTQ4Nn0.AhxyuIlIRyx_Tx3UP1nr1M9od3i-B3BSjAMhKGbQqXs`,
           "Content-Type": "application/json",
         },
       }
     );
-    console.log("Auth Response");
-    console.log(authResponse);
     // Return the response as is from the BFF
     return authResponse.data;
   } catch (error) {
