@@ -139,28 +139,25 @@ services:
   #   networks:
   #     - st_sritel-network
 
-
-# Chat Service
+  # Chat Service
   chatservice:
     hostname: chatservice
     container_name: st_chatservice
-    build: 
+    build:
       context: ./chatService/
-      dockerfile: ./pnpm.Dockerfile  # Assuming you are using pnpm for managing dependencies
+      dockerfile: ./pnpm.Dockerfile # Assuming you are using pnpm for managing dependencies
     restart: always
     ports:
-      - 4906:4906  # Mapping chat service port
+      - 4906:4906 # Mapping chat service port
     volumes:
-      - ./chatService:/app  # Volume to mount the chat service code
+      - ./chatService:/app # Volume to mount the chat service code
     working_dir: /app
     environment:
       - PORT=4906
-      - MONGODB_URL=mongodb://mongodb-chat:27017/chatService  # Environment variable for MongoDB connection
-    entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]  # Install dependencies and start the service
+      - MONGODB_URL=mongodb://mongodb-chat:27017/chatService # Environment variable for MongoDB connection
+    entrypoint: ["sh", "-c", "pnpm i && pnpm dev"] # Install dependencies and start the service
     networks:
       - st_sritel-network
-
-
 
   bill-service:
     hostname: bill-service
@@ -250,7 +247,6 @@ services:
       - "4980:80"
     restart: unless-stopped
 
-
   bff:
     container_name: st_bff
     hostname: bff
@@ -271,7 +267,7 @@ services:
       - CORE_CHAT_SERVICE_URL=http://chatservice:4906/api
       - CORE_AUTH_SERVICE_URL=http://authservice:4907/api
       - CORE_UPLOAD_SERVICE_URL=http://uploadservice:4908/api
-      - CORE_VALUE_ADDED_SERVICE_URL=http://localhost:4909/api
+      - CORE_VALUE_ADDED_SERVICE_URL=http://valueaddedservice:4909/api
       - SERVER_PORT=4901
       - JWT_SECRET_KEY=M5vH+hjjkkPdcuB4EI7EuVgQrq9hSOZ6w3/rYFtE0tUaSGh6A+aWV/qc0i9mebYr0bnatT6Bvllwx/HizXvj6Q==
     command: mvn spring-boot:run
@@ -376,7 +372,6 @@ services:
 networks:
   st_sritel-network:
     driver: bridge
-
 
 volumes:
   st_upload:
