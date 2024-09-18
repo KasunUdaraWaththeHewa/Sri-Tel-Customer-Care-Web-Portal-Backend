@@ -41,10 +41,12 @@ const AccountSchema = new Schema({
   billingInfo: {
     lastPaymentDate: {
       type: Date,
+      default: null,
     },
     totalOutstanding: {
       type: Number,
       min: [0, "Total outstanding must be a positive number"],
+      default: 0,
     },
   },
   createdAt: {

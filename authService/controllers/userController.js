@@ -69,7 +69,6 @@ const signupUser = async (req, res) => {
       number: user.phoneNumber,
       userID: user._id,
       accountType: "Postpaid",
-      billingInfo: { lastPaymentDate: Date.now(), totalOutstanding: 0 },
     };
     const customerServiceURL = "http://bff:4901/api/proxy/forward/customer/";
     const customerResponse = await axios.post(
