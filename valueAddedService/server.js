@@ -48,6 +48,8 @@ const dataPackageRoutes = require("./routes/dataPackageRoutes");
 app.use("/api/value-added/dataPackages", dataPackageRoutes);
 const voicePackageRoutes = require("./routes/voicePackageRoutes");
 app.use("/api/value-added/voicePackages", voicePackageRoutes);
+const billingRoutes = require("./routes/billingRoutes");
+app.use("/api/value-added/billing", billingRoutes);
 
 schedule();
 
