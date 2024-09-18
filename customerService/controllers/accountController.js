@@ -5,10 +5,9 @@ const { captureToken } = require("../functions/captureToken");
 
 const createAccount = async (req, res) => {
   try {
-    const { email, number, userID, accountType, billingInfo } = req.body;
+    const { email, number, userID, accountType } = req.body;
     const token = captureToken(req);
     const existingUser = checkExistingUser(email, token);
-
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
       res.status(404).json(response);
@@ -20,7 +19,6 @@ const createAccount = async (req, res) => {
         number,
         userID,
         accountType,
-        billingInfo,
       });
       await newAccount.save();
       const response = new ApiResponse(
@@ -42,15 +40,20 @@ const createAccount = async (req, res) => {
 
 const updateAccount = async (req, res) => {
   const { id } = req.params;
-  const updateData = req.body;
-  const { email } = updateData;
+  const { email, accountType, number } = req.body;
+
   try {
-    const existingUser = checkExistingUser(email);
+    const existingUser = await checkExistingUser(email);
 
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
       return res.status(404).json(response);
     }
+
+    const updateData = {};
+    if (accountType) updateData.accountType = accountType;
+    if (number) updateData.number = number;
+
     const updatedAccount = await Account.findByIdAndUpdate(id, updateData, {
       new: true,
     });
@@ -76,8 +79,9 @@ const updateAccount = async (req, res) => {
   }
 };
 
+
 const activateAccount = async (req, res) => {
-  const { email } = req.params;
+  const { accountID, email } = req.body;
 
   try {
     const existingUser = checkExistingUser(email);
@@ -87,7 +91,7 @@ const activateAccount = async (req, res) => {
       return res.status(404).json(response);
     }
 
-    const account = await Account.findOne({ email });
+    const account = await Account.findById(accountID);
 
     if (!account) {
       return res
@@ -113,7 +117,7 @@ const activateAccount = async (req, res) => {
 };
 
 const deactivateAccount = async (req, res) => {
-  const { email } = req.params;
+  const { accountID, email } = req.body;
 
   try {
     const existingUser = checkExistingUser(email);
@@ -123,7 +127,7 @@ const deactivateAccount = async (req, res) => {
       return res.status(404).json(response);
     }
 
-    const account = await Account.findOne({ email });
+    const account = await Account.findById(accountID);
 
     if (!account) {
       return res
@@ -151,7 +155,7 @@ const deactivateAccount = async (req, res) => {
 };
 
 const suspendAccount = async (req, res) => {
-  const { email } = req.params;
+  const { accountID, email } = req.body;
 
   try {
     const existingUser = checkExistingUser(email);
@@ -161,7 +165,7 @@ const suspendAccount = async (req, res) => {
       return res.status(404).json(response);
     }
 
-    const account = await Account.findOne({ email });
+    const account = await Account.findById(accountID);
 
     if (!account) {
       return res
@@ -248,7 +252,7 @@ const getAccountDetails = async (req, res) => {
   const { accountID } = req.params;
 
   try {
-    const account = await Account.findOne({ accountID });
+    const account = await Account.findById(accountID);
 
     if (!account) {
       return res
@@ -270,7 +274,7 @@ const isExistingAccount = async (req, res) => {
   const { accountID } = req.params;
 
   try {
-    const account = await Account.findById({ accountID });
+    const account = await Account.findById(accountID);
     if (!account) {
       return res
         .status(404)
