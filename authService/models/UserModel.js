@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 const validator = require("validator");
+const crypto = require("crypto");
 
 const userSchema = new Schema({
   email: {
@@ -84,7 +85,6 @@ userSchema.statics.signup = async function ({
   address,
   nic,
 }) {
-
   // Validation for mandatory fields
   if (!email || !password || !fullName) {
     throw Error("Email, password, and full name are required.");
@@ -194,20 +194,24 @@ userSchema.statics.forgotPassword = async function (email) {
   user.resetTokenExpires = Date.now() + 3600000; // 1 hour expiration
 
   await user.save();
-
   // Send the token to the user's email (mock function, replace with actual implementation)
   sendResetTokenEmail(user.email, resetToken);
 
   return resetToken;
 };
 
-userSchema.statics.resetPassword = async function (resetToken, newPassword) {
+userSchema.statics.resetPassword = async function (resetToken, newPassword, email) {
+  const user1 = await this.findOne({email});
+  if (!user1) {
+    throw new Error("Invalid Email");
+  }
   const user = await this.findOne({
     resetToken,
     resetTokenExpires: { $gt: Date.now() },
+    email
   });
   if (!user) {
-    throw new Error("Invalid or expired reset token.");
+    throw new Error("Invalid or expired reset token");
   }
 
   const salt = await bcrypt.genSalt(10);

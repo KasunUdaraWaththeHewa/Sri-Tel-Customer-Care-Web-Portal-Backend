@@ -82,9 +82,14 @@ const signupUser = async (req, res) => {
       }
     );
 
-    if (customerResponse.status===201) {
+    if (customerResponse.status === 201) {
       console.log("Signup successful");
-      const response = new ApiResponse(true, 200, "Signup successful", customerResponse.data.data);
+      const response = new ApiResponse(
+        true,
+        200,
+        "Signup successful",
+        customerResponse.data.data
+      );
       res.status(200).json(response);
       return;
     }
@@ -141,9 +146,14 @@ const forgotPassword = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  const { resetToken, newPassword } = req.body;
+  const { resetToken, newPassword, email } = req.body;
   try {
-    const user = await User.resetPassword(resetToken, newPassword);
+    const user = await User.resetPassword(resetToken, newPassword, email);
+    if (!user) {
+      const response = new ApiResponse(false, 400, "Invalid reset token or email", null);
+      res.status(400).json(response);
+      return;
+    }
     const token = createToken(user._id, user.role);
     const response = new ApiResponse(true, 200, "Password reset successful", {
       email: user.email,
