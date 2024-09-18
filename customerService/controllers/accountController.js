@@ -1,38 +1,42 @@
 const Account = require("../models/Account");
 const ApiResponse = require("../dto/responseDto");
 const { checkExistingUser } = require("../functions/checkExistingUser");
-const {captureToken} = require("../functions/captureToken");
+const { captureToken } = require("../functions/captureToken");
 
 const createAccount = async (req, res) => {
   try {
     const { email, number, userID, accountType, billingInfo } = req.body;
     const token = captureToken(req);
     const existingUser = checkExistingUser(email, token);
-    console.log(existingUser);
 
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
-      return res.status(404).json(response);
+      res.status(404).json(response);
+      return;
     }
-
-    const newAccount = new Account({
-      email,
-      number,
-      userID,
-      accountType,
-      billingInfo,
-    });
-
-    await newAccount.save();
-    const response = new ApiResponse(
-      true,
-      201,
-      "Account created successfully",
-      newAccount
-    );
-    res.status(201).json(response);
+    try {
+      const newAccount = new Account({
+        email,
+        number,
+        userID,
+        accountType,
+        billingInfo,
+      });
+      await newAccount.save();
+      const response = new ApiResponse(
+        true,
+        201,
+        "Account created successfully",
+        newAccount
+      );
+      res.status(201).json(response);
+      return;
+    } catch (error) {
+      console.error("Error creating account:", error.message);
+    }
   } catch (error) {
     res.status(400).json(new ApiResponse(false, 400, error.message, null));
+    return;
   }
 };
 

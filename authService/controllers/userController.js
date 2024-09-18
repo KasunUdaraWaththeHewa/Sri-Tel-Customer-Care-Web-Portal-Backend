@@ -71,7 +71,6 @@ const signupUser = async (req, res) => {
       accountType: "Postpaid",
       billingInfo: { lastPaymentDate: Date.now(), totalOutstanding: 0 },
     };
-    //works until this api call
     const customerServiceURL = "http://bff:4901/api/proxy/forward/customer/";
     const customerResponse = await axios.post(
       customerServiceURL,
@@ -83,18 +82,19 @@ const signupUser = async (req, res) => {
       }
     );
 
-    console.log(customerResponse);
-
-    if (customerResponse.status === true) {
-      const response = new ApiResponse(true, 200, "Signup successful", {
-        email,
-        token,
-      });
+    if (customerResponse.status===201) {
+      console.log("Signup successful");
+      const response = new ApiResponse(true, 200, "Signup successful", customerResponse.data.data);
       res.status(200).json(response);
+      return;
     }
+    const response = new ApiResponse(false, 400, "Signup failed", null);
+    res.status(400).json(response);
+    return;
   } catch (err) {
     const response = new ApiResponse(false, 400, err.message, null);
     res.status(400).json(response);
+    return;
   }
 };
 
@@ -157,17 +157,15 @@ const resetPassword = async (req, res) => {
 };
 
 const getProfileDetails = async (req, res) => {
-  console.log("Get Profile Details Called");
   const { email } = req.body;
-  console.log(email);
 
   try {
     const user = await User.findOne({ email });
-    console.log(user);
 
     if (!user) {
       const response = new ApiResponse(false, 404, "User not found", null);
       return res.status(404).json(response);
+      return;
     }
 
     const response = new ApiResponse(
@@ -188,6 +186,7 @@ const getProfileDetails = async (req, res) => {
       }
     );
     res.status(200).json(response);
+    return;
   } catch (err) {
     const response = new ApiResponse(
       false,
@@ -196,6 +195,7 @@ const getProfileDetails = async (req, res) => {
       null
     );
     res.status(500).json(response);
+    return;
   }
 };
 

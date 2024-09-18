@@ -16,15 +16,13 @@ const AccountSchema = new Schema({
   },
   number: {
     type: String,
-    required: [true, "Account number is required"],
-    unique: true,
-    trim: true,
-    validate: {
-      validator: function (v) {
-        return /^[0-9]+$/.test(v);
-      },
-      message: (props) => `${props.value} is not a valid account number!`,
-    },
+    required: true,
+    // validate: {
+    //   validator: function (v) {
+    //     return validator.isMobilePhone(v, "any", { strictMode: false });
+    //   },
+    //   message: "Invalid phone number",
+    // },
   },
   userID: {
     type: String,

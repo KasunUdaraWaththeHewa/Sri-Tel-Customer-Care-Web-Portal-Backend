@@ -27,7 +27,7 @@ const userSchema = new Schema({
   },
   phoneNumber: {
     type: String,
-    required: false,
+    required: true,
     validate: {
       validator: function (v) {
         return validator.isMobilePhone(v, "any", { strictMode: false });
