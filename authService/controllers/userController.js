@@ -150,7 +150,12 @@ const resetPassword = async (req, res) => {
   try {
     const user = await User.resetPassword(resetToken, newPassword, email);
     if (!user) {
-      const response = new ApiResponse(false, 400, "Invalid reset token or email", null);
+      const response = new ApiResponse(
+        false,
+        400,
+        "Invalid reset token or email",
+        null
+      );
       res.status(400).json(response);
       return;
     }
@@ -282,7 +287,6 @@ const deactivateAccount = async (req, res) => {
     user.status = "inactive";
     user.updatedAt = Date.now();
     await user.save();
-
     const response = new ApiResponse(
       true,
       200,
@@ -356,9 +360,11 @@ const isInActiveUser = async (req, res) => {
     }
 
     if (user.status === "inactive") {
-      const response = new ApiResponse(true, 200, "User is active", null);
+      const response = new ApiResponse(true, 200, "User is inactive", null);
       return res.status(200).json(response);
     }
+    const response = new ApiResponse(false, 400, "User is active", null);
+    return res.status(400).json(response);
   } catch (err) {
     const response = new ApiResponse(
       false,
