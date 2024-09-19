@@ -4,11 +4,12 @@ const { decodeToken } = require('../functions/decodeToken');
 
 
 const createVoicePackage = async (req, res) => {
-  const { name, description, talkTime, price, durationInDays } = req.body;
+  const { name, description, talkTime, price, durationInDays , features } = req.body;
   try {
     const voicePackage = new VoicePackage({
       name,
       description,
+      features,
       talkTime,
       price,
       durationInDays,
@@ -53,11 +54,11 @@ const getVoicePackageById = async (req, res) => {
 
 const updateVoicePackage = async (req, res) => {
   const { id } = req.params;
-  const { name, description, talkTime, price, durationInDays } = req.body;
+  const { name, description, talkTime, price, durationInDays , features } = req.body;
   try {
     const voicePackage = await VoicePackage.findByIdAndUpdate(
       id,
-      { name, description, talkTime, price, durationInDays },
+      { name, description, talkTime, price, durationInDays , features },
       { new: true }
     );
     if (!voicePackage) {

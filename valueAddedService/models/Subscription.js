@@ -6,6 +6,10 @@ const SubscriptionSchema = new mongoose.Schema({
     required: true,
   },
   description: String,
+  features: {
+    type: Object,
+    required: true,
+  },
   price: Number,
   durationInDays: Number,
 }, { timestamps: true });

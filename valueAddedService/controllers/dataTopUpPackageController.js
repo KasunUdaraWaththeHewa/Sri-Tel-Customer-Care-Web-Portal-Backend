@@ -4,13 +4,14 @@ const { decodeToken } = require('../functions/decodeToken');
 
 
 const createDataTopUpPackage = async (req, res) => {
-  const { name, description, dataAmount, price, durationInDays } = req.body;
+  const { name, description, dataAmount, price, durationInDays, features } = req.body;
   try {
     const package = new DataTopUpPackage({
       name,
       description,
       dataAmount,
       price,
+      features,
       durationInDays,
     });
 
@@ -89,11 +90,11 @@ const getDataTopUpPackageById = async (req, res) => {
 
 const updateDataTopUpPackage = async (req, res) => {
   const { id } = req.params;
-  const { name, description, dataAmount, price, durationInDays } = req.body;
+  const { name, description, dataAmount, price, durationInDays, features } = req.body;
   try {
     const package = await DataTopUpPackage.findByIdAndUpdate(
       id,
-      { name, description, dataAmount, price, durationInDays },
+      { name, description, dataAmount, price, durationInDays, features },
       { new: true }
     );
     if (!package) {
