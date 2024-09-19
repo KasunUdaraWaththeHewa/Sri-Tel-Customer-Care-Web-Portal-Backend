@@ -2,13 +2,13 @@ const Account = require("../models/Account");
 const ApiResponse = require("../dto/responseDto");
 const { checkExistingUser } = require("../functions/checkExistingUser");
 const { captureToken } = require("../functions/captureToken");
-const { decodeToken } = require('../functions/decodeToken'); 
+const { decodeToken } = require("../functions/decodeToken");
 
 const createAccount = async (req, res) => {
   try {
     const { email, number, userID, accountType } = req.body;
     const token = captureToken(req);
-    console.log("token captured by customerservice: ", token);  
+    console.log("token captured by customerservice: ", token);
     const existingUser = checkExistingUser(email, token);
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
@@ -343,6 +343,37 @@ const updateOutstanding = async (req, res) => {
   }
 };
 
+const updateLastPaymentDate = async (req, res) => {
+  const { accountID } = req.params;
+  const { lastPaymentDate } = req.body;
+
+  try {
+    const account = await Account.findById(accountID);
+
+    if (!account) {
+      return res
+        .status(404)
+        .json(new ApiResponse(false, 404, "Account not found", null));
+    }
+
+    account.billingInfo.lastPaymentDate = lastPaymentDate;
+    await account.save();
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          true,
+          200,
+          "Last payment date updated successfully",
+          account
+        )
+      );
+  } catch (error) {
+    res.status(400).json(new ApiResponse(false, 400, error.message, null));
+  }
+};
+
 module.exports = {
   createAccount,
   updateAccount,
@@ -354,4 +385,5 @@ module.exports = {
   isExistingAccount,
   getAllAccounts,
   updateOutstanding,
+  updateLastPaymentDate,
 };

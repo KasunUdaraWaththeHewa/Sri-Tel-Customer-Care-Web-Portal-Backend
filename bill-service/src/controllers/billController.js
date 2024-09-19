@@ -38,6 +38,19 @@ exports.recordPayment = async (req, res) => {
       }
     );
 
+    // Update the last payment date
+    await axios.post(
+      `http://bff:4901/api/proxy/forward/customer/paymentDate/${accountId}`,
+      {
+        lastPaymentDate: new Date(),
+      },
+      {
+        headers: {
+          Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGY3YTdlMWI0ZTRhN2YyZDhjOGM0YjQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjY3NDEzNjAsImV4cCI6MjY3MzQ2OTM2MH0.oWTogdxmge7I4IsGptQPetjz4tTb1OncNnPHmdDMVMs`,
+        },
+      }
+    );
+
     res.status(200).json(payment);
   } catch (error) {
     res.status(500).json({ message: error.message });

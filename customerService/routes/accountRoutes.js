@@ -12,5 +12,6 @@ router.get("/customer/:email", accountController.getAllAccountsForCustomer);
 router.get("/:accountID", accountController.getAccountDetails);
 router.get("/check/:accountID", accountController.isExistingAccount);
 router.post("/outstanding/:accountID", accountController.updateOutstanding);
+router.post("/paymentDate/:accountID", accountController.updateLastPaymentDate);
 
 module.exports = router;
