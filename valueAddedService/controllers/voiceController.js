@@ -9,6 +9,7 @@ const calculateExpiryDate = (days) => {
 };
 
 const activateVoice = async (req, res) => {
+  console.log(req.body);
   const { accountID, email, voiceMinutes, price, durationInDays } = req.body;
 
   try {
@@ -31,8 +32,9 @@ const activateVoice = async (req, res) => {
       existingVoice.isActive = true;
       existingVoice.expiryDate = calculateExpiryDate(existingVoice.durationInDays || 30);
       await existingVoice.save();
-      
+      console.log(existingVoice);
       const response = new ApiResponse(true, 200, "Voice package activated successfully!", existingVoice);
+      console.log(response);
       res.status(200).json(response);
     } else {
       const newVoice = new Voice({
@@ -44,7 +46,7 @@ const activateVoice = async (req, res) => {
         expiryDate: calculateExpiryDate(durationInDays),
       });
       await newVoice.save();
-      
+      console.log(newVoice);
       const response = new ApiResponse(true, 201, "Voice package created and activated successfully!", newVoice);
       res.status(201).json(response);
     }
