@@ -63,6 +63,7 @@ const signupUser = async (req, res) => {
       role,
     });
     const token = createToken(user._id, user.role);
+    console.log("token at signup in auth: " + token);
 
     const accountPayload = {
       email: user.email,

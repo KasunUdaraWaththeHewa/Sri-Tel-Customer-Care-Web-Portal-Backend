@@ -7,6 +7,7 @@ const createAccount = async (req, res) => {
   try {
     const { email, number, userID, accountType } = req.body;
     const token = captureToken(req);
+    console.log("token captured by customerservice: ", token);
     const existingUser = checkExistingUser(email, token);
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
