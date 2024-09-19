@@ -11,5 +11,6 @@ router.post("/suspend", accountController.suspendAccount);
 router.get("/customer/:email", accountController.getAllAccountsForCustomer);
 router.get("/:accountID", accountController.getAccountDetails);
 router.get("/check/:accountID", accountController.isExistingAccount);
+router.post("/outstanding/:accountID", accountController.updateOutstanding);
 
 module.exports = router;

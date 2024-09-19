@@ -79,7 +79,6 @@ const updateAccount = async (req, res) => {
   }
 };
 
-
 const activateAccount = async (req, res) => {
   const { accountID, email } = req.body;
 
@@ -290,6 +289,35 @@ const isExistingAccount = async (req, res) => {
   }
 };
 
+const updateOutstanding = async (req, res) => {
+  const { amount } = req.body;
+  const { accountID } = req.params;
+
+  try {
+    const account = await Account.findById(accountID);
+    if (account) {
+      account.billingInfo.totalOutstanding += amount;
+      await account.save();
+      res
+        .status(200)
+        .json(
+          new ApiResponse(
+            true,
+            200,
+            "Outstanding amount updated successfully",
+            account
+          )
+        );
+    } else {
+      res
+        .status(404)
+        .json(new ApiResponse(false, 404, "Account not found", null));
+    }
+  } catch (error) {
+    res.status(400).json(new ApiResponse(false, 400, error.message, null));
+  }
+};
+
 module.exports = {
   createAccount,
   updateAccount,
@@ -300,4 +328,5 @@ module.exports = {
   getAccountDetails,
   isExistingAccount,
   getAllAccounts,
+  updateOutstanding,
 };

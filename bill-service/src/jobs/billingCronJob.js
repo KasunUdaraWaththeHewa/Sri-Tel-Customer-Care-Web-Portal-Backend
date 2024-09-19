@@ -72,6 +72,22 @@ const runBillingJob = async () => {
 
           await newBill.save();
           console.log(`Billing information saved for account ${account._id}`);
+
+          // Update the totalOutstanding for the customer
+          const updateOutstandingUrl = `http://bff:4901/api/proxy/forward/customer/outstanding/${account._id}`;
+          await axios.post(
+            updateOutstandingUrl,
+            {
+              amount: totalBillingAmount,
+            },
+            {
+              headers: {
+                Authorization:
+                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGY3YTdlMWI0ZTRhN2YyZDhjOGM0YjQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjY1NzE2NzIsImV4cCI6MjY3MzI5OTY3Mn0.QpKKDpMZ4bH7kXAHxGob_Vg7I3dLL0ogBxRdb-qfBp4",
+              }, // Provide the appropriate JWT token
+            }
+          );
+          console.log(`Updated totalOutstanding for account ${account._id}`);
         } catch (error) {
           console.error(
             `Error fetching billing amount for account ${account._id}: `,
