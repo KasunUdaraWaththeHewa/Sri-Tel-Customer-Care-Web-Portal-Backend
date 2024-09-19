@@ -12,9 +12,9 @@ const getAvailableTones = async (req, res) => {
 };
 
 const addToneToCatalog = async (req, res) => {
-  const { toneId, toneName, toneDescription, price } = req.body;
+  const { toneName, toneDescription, price } = req.body;
   try {
-    const newTone = new ToneCatalog({ toneId, toneName, toneDescription, price });
+    const newTone = new ToneCatalog({ toneName, toneDescription, price });
     await newTone.save();
     res.status(201).json(newTone);
   } catch (error) {

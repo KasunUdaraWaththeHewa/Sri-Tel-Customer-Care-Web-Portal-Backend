@@ -1,9 +1,9 @@
 const axios = require("axios");
 
 const checkExistingAccount = async (accountID) => {
-  const customerServiceUrl = `${process.env.CUSTOMER_SERVICE_URL}/api/customers/${accountID}`;
+  const customerServiceUrl = `http://bff:4901/api/proxy/forward/customer/check/${accountID}`;
   const customerResponse = await axios.get(customerServiceUrl);
-  return customerResponse;
+  return customerResponse.data;
 };
 
 module.exports = { checkExistingAccount };

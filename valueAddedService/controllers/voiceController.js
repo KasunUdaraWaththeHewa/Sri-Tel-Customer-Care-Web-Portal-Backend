@@ -33,8 +33,9 @@ const activateVoice = async (req, res) => {
       existingVoice.isActive = true;
       existingVoice.expiryDate = calculateExpiryDate(existingVoice.durationInDays || 30);
       await existingVoice.save();
-      
+
       const response = new ApiResponse(true, 200, "Voice package activated successfully!", existingVoice);
+      
       res.status(200).json(response);
     } else {
       const newVoice = new Voice({
@@ -47,7 +48,7 @@ const activateVoice = async (req, res) => {
       });
       await newVoice.save();
       
-      const response = new ApiResponse(true, 201, "Voice package created and activated successfully!", newVoice);
+      const response = new ApiResponse(true, 201, "Voice package activated successfully!", newVoice);
       res.status(201).json(response);
     }
   } catch (error) {

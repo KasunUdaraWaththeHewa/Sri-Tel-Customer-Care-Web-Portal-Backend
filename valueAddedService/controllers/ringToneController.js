@@ -5,7 +5,7 @@ const { decodeToken } = require('../functions/decodeToken');
 
 
 const personalizeTone = async (req, res) => {
-  const { accountID, email, price, toneId, durationInDays } = req.body;
+  const { accountID, email, price,toneId, durationInDays } = req.body;
 
   try {
     const existingAccount = checkExistingAccount(accountID);
