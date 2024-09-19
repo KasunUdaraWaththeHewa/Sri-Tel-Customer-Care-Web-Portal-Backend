@@ -115,6 +115,8 @@ public class ProxyController {
             @RequestBody Map<String, Object> requestBody,
             HttpServletRequest request) {
 
+        logger.info("token recieved at bff: " + token);
+
         String requestUri = request.getRequestURI().replace("/api/proxy/forward", "");
         String backendUrl = determineBackendUrl(requestUri);
 
@@ -297,26 +299,21 @@ public class ProxyController {
 
         // Validate the token
         if (!validateToken(token)) {
+            logger.error("token validation failed");
             return ResponseEntity.ok(new ApiResponse<>(false, HttpStatus.UNAUTHORIZED.value(), "Invalid token", null));
         }
-
-        // Extract _id and role from the token
-        Map<String, Object> claims = jwtService.getClaimsFromToken(token);
-        String userId = (String) claims.get("_id");
-        String role = (String) claims.get("role");
 
         // If token is valid, forward the request to the microservice with additional headers
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("user_id", userId);
-        headers.set("role", role);
 
         HttpEntity<Object> entity = new HttpEntity<>(body, headers);
 
         try {
         // Forward the request to the backend
         ResponseEntity<String> response = restTemplate.exchange(backendUrl, method, entity, String.class);
+        logger.info("Response from backend: " + response);
         
         // Forward the exact response back to the client
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
