@@ -1,4 +1,6 @@
 const billService = require("../services/billService");
+const { decodeToken } = require('../functions/decodeToken'); 
+
 
 // Create a new bill
 exports.createBill = async (req, res) => {

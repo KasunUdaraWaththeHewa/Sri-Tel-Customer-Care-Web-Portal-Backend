@@ -1,6 +1,8 @@
 const RingTone = require("../models/RingTone");
 const ApiResponse = require("../dto/responseDto");
-const { checkExistingAccount } = require("../function/checkExistingAccount");
+const { checkExistingAccount } = require("../functions/checkExistingAccount");
+const { decodeToken } = require('../functions/decodeToken'); 
+
 
 const personalizeTone = async (req, res) => {
   const { accountID, email, price, toneId, durationInDays } = req.body;
