@@ -29,6 +29,7 @@ const userSchema = new Schema({
   phoneNumber: {
     type: String,
     required: true,
+    unique: true,
     validate: {
       validator: function (v) {
         return validator.isMobilePhone(v, "any", { strictMode: false });
@@ -43,6 +44,7 @@ const userSchema = new Schema({
   nic: {
     type: String,
     required: false,
+    unique: true,
   },
   role: {
     type: String,
@@ -106,6 +108,16 @@ userSchema.statics.signup = async function ({
   const exists = await this.findOne({ email });
   if (exists) {
     throw new Error("Email already exists.");
+  }
+
+  const phoneExists = await this.findOne({ phoneNumber });
+  if (phoneExists) {
+    throw new Error("Phone number already exists.");
+  }
+
+  const nicExists = await this.findOne({ nic });
+  if (nicExists) {
+    throw new Error("NIC already exists.");
   }
 
   // Hash the password
@@ -200,15 +212,19 @@ userSchema.statics.forgotPassword = async function (email) {
   return resetToken;
 };
 
-userSchema.statics.resetPassword = async function (resetToken, newPassword, email) {
-  const user1 = await this.findOne({email});
+userSchema.statics.resetPassword = async function (
+  resetToken,
+  newPassword,
+  email
+) {
+  const user1 = await this.findOne({ email });
   if (!user1) {
     throw new Error("Invalid Email");
   }
   const user = await this.findOne({
     resetToken,
     resetTokenExpires: { $gt: Date.now() },
-    email
+    email,
   });
   if (!user) {
     throw new Error("Invalid or expired reset token");

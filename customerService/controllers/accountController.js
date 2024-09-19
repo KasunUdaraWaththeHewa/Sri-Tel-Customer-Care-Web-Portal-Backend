@@ -14,6 +14,18 @@ const createAccount = async (req, res) => {
       res.status(404).json(response);
       return;
     }
+
+    const isExistingNumber = await Account.findOne({ number });
+    if (isExistingNumber) {
+      const response = new ApiResponse(
+        false,
+        400,
+        "Account with this number already exists.",
+        null
+      );
+      res.status(400).json(response);
+      return;
+    }
     try {
       const newAccount = new Account({
         email,
@@ -50,6 +62,17 @@ const updateAccount = async (req, res) => {
       const response = new ApiResponse(false, 404, "User not found.", null);
       return res.status(404).json(response);
     }
+    const isExistingNumber = await Account.findOne({ number });
+    if (isExistingNumber) {
+      const response = new ApiResponse(
+        false,
+        400,
+        "Account with this number already exists.",
+        null
+      );
+      res.status(400).json(response);
+      return;
+    }
 
     const updateData = {};
     if (accountType) updateData.accountType = accountType;
@@ -79,7 +102,6 @@ const updateAccount = async (req, res) => {
     res.status(400).json(new ApiResponse(false, 400, error.message, null));
   }
 };
-
 
 const activateAccount = async (req, res) => {
   const { accountID, email } = req.body;
