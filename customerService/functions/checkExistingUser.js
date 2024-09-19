@@ -4,7 +4,6 @@ const checkExistingUser = async (email, token) => {
   try {
     //hari token eka capture krgnn one. eka hari giyoth wade hari yawi
     const authServiceUrl = `http://bff:4901/api/proxy/forward/user/getProfileDetails/${email}`;
-    console.log("token at check existing user: ", token);
 
     const authResponse = await axios.post(
       authServiceUrl,
