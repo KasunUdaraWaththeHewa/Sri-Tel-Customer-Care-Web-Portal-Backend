@@ -19,7 +19,7 @@ const produceMessage = async () => {
     });
 
     await producer.send({
-      topic: 'test',
+      topic: 'notification',
       messages: [
         { value: message },
       ],
@@ -32,6 +32,34 @@ const produceMessage = async () => {
     await producer.disconnect();
   }
 };
+
+
+// produce message function 
+
+const notification = async (emailAddress: string, msg: string, title: string): Promise<void> => {
+  try {
+    await producer.connect();
+    const message = JSON.stringify({
+      emailAddress: emailAddress,
+      msg: msg,
+      type: title
+    });
+
+    await producer.send({
+      topic: 'notification',
+      messages: [
+        { value: message },
+      ],
+    });
+
+    console.log('Message sent successfully');
+  } catch (error) {
+    console.error('Failed to send message:', error);
+  } finally {
+    await producer.disconnect();
+  }
+}
+
 
 
 
