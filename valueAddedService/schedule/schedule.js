@@ -5,7 +5,7 @@ const {
   expireDataTopUp,
   expireRingTone,
   expireSubscriptionBased,
-} = require("../function/scheduledFunctions");
+} = require("../functions/scheduledFunctions");
 
 function schedule() {
   cron.schedule("0 0 0 * * *", async () => {

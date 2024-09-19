@@ -2,6 +2,8 @@ const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
 const ApiResponse = require("../dto/responseDto");
 const axios = require("axios");
+const { decodeToken } = require('../functions/decodeToken'); 
+
 
 const createToken = (_id, role) => {
   return jwt.sign({ _id, role }, process.env.JWT_SECRET_KEY, {

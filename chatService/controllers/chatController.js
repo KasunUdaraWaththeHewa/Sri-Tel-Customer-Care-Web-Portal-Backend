@@ -1,5 +1,7 @@
 const ApiResponse = require("../dto/responseDto");
 const Chat = require('../models/ChatModel'); // Correct the path to your model if necessary
+const { decodeToken } = require('../functions/decodeToken'); 
+
 
 
 // Get chat history by roomId

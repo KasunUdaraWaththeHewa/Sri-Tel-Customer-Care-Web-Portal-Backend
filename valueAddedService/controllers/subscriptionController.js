@@ -1,5 +1,7 @@
 const Subscription = require("../models/Subscription");
 const ApiResponse = require("../dto/responseDto");
+const { decodeToken } = require('../functions/decodeToken'); 
+
 
 const createSubscription = async (req, res) => {
   const { name, description, price, durationInDays } = req.body;
