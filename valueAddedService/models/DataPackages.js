@@ -7,6 +7,10 @@ const DataPackageSchema = new mongoose.Schema(
       required: true,
     },
     description: String,
+    features: {
+      type: Object,
+      required: true,
+    },
     dataAmount: {
       type: Number,
       required: true,

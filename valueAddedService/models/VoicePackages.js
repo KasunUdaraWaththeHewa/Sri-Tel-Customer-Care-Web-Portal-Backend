@@ -7,6 +7,10 @@ const VoicePackageSchema = new mongoose.Schema(
       required: true,
     },
     description: String,
+    features: {
+      type: Object,
+      required: true,
+    },
     talkTime: {
       type: Number,
       required: true,

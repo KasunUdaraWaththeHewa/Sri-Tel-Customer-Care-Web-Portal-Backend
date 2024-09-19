@@ -4,13 +4,14 @@ const { decodeToken } = require('../functions/decodeToken');
 
 
 const createSubscription = async (req, res) => {
-  const { name, description, price, durationInDays } = req.body;
+  const { name, description, price, durationInDays, features } = req.body;
   try {
     const subscription = new Subscription({
       name,
       description,
       price,
       durationInDays,
+      features
     });
 
     await subscription.save();
@@ -55,11 +56,11 @@ const getSubscriptionById = async (req, res) => {
 
 const updateSubscription = async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, durationInDays } = req.body;
+  const { name, description, price, durationInDays, features } = req.body;
   try {
     const subscription = await Subscription.findByIdAndUpdate(
       id,
-      { name, description, price, durationInDays },
+      { name, description, price, durationInDays, features },
       { new: true }
     );
     
