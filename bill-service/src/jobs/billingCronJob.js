@@ -23,7 +23,7 @@ const runBillingJob = async () => {
     ).getDate();
 
     // if (today.getDate() === lastDay) {
-    if (today.getDate() === lastDay) {
+    if (true) {
       console.log("Running monthly billing job...");
 
       // Fetch all accounts from the BFF (Customer Service via proxy)
