@@ -2,15 +2,29 @@ const Account = require("../models/Account");
 const ApiResponse = require("../dto/responseDto");
 const { checkExistingUser } = require("../functions/checkExistingUser");
 const { captureToken } = require("../functions/captureToken");
+const { decodeToken } = require('../functions/decodeToken'); 
 
 const createAccount = async (req, res) => {
   try {
     const { email, number, userID, accountType } = req.body;
     const token = captureToken(req);
+    console.log("token captured by customerservice: ", token);  
     const existingUser = checkExistingUser(email, token);
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
       res.status(404).json(response);
+      return;
+    }
+
+    const isExistingNumber = await Account.findOne({ number });
+    if (isExistingNumber) {
+      const response = new ApiResponse(
+        false,
+        400,
+        "Account with this number already exists.",
+        null
+      );
+      res.status(400).json(response);
       return;
     }
     try {
@@ -48,6 +62,17 @@ const updateAccount = async (req, res) => {
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
       return res.status(404).json(response);
+    }
+    const isExistingNumber = await Account.findOne({ number });
+    if (isExistingNumber) {
+      const response = new ApiResponse(
+        false,
+        400,
+        "Account with this number already exists.",
+        null
+      );
+      res.status(400).json(response);
+      return;
     }
 
     const updateData = {};

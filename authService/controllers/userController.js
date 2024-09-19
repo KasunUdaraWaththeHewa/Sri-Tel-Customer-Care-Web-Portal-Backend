@@ -2,6 +2,8 @@ const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
 const ApiResponse = require("../dto/responseDto");
 const axios = require("axios");
+const { decodeToken } = require('../functions/decodeToken'); 
+
 
 const createToken = (_id, role) => {
   return jwt.sign({ _id, role }, process.env.JWT_SECRET_KEY, {
@@ -63,6 +65,7 @@ const signupUser = async (req, res) => {
       role,
     });
     const token = createToken(user._id, user.role);
+    console.log("token at signup in auth: " + token);
 
     const accountPayload = {
       email: user.email,
@@ -222,6 +225,30 @@ const editProfileDetails = async (req, res) => {
     if (!user) {
       const response = new ApiResponse(false, 404, "User not found", null);
       return res.status(404).json(response);
+    }
+
+    const isExistingNumber = await User.findOne({ phoneNumber });
+    if (isExistingNumber) {
+      const response = new ApiResponse(
+        false,
+        400,
+        "Account with this number already exists.",
+        null
+      );
+      res.status(400).json(response);
+      return;
+    }
+
+    const isExistingNIC = await User.findOne({ nic });
+    if (isExistingNIC) {
+      const response = new ApiResponse(
+        false,
+        400,
+        "Account with this NIC already exists.",
+        null
+      );
+      res.status(400).json(response);
+      return;
     }
 
     if (fullName) user.fullName = fullName;

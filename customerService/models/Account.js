@@ -17,6 +17,7 @@ const AccountSchema = new Schema({
   number: {
     type: String,
     required: true,
+    unique: true,
     // validate: {
     //   validator: function (v) {
     //     return validator.isMobilePhone(v, "any", { strictMode: false });

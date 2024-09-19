@@ -1,6 +1,8 @@
 const InternationalRoaming = require("../models/InternationalRoaming");
 const ApiResponse = require("../dto/responseDto");
-const { checkExistingAccount } = require("../function/checkExistingAccount");
+const { checkExistingAccount } = require("../functions/checkExistingAccount");
+const { decodeToken } = require('../functions/decodeToken'); 
+
 
 const activateRoaming = async (req, res) => {
   const { email, accountID } = req.body;

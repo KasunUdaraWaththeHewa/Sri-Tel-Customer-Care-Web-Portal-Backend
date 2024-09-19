@@ -1,6 +1,8 @@
 const Voice = require("../models/Voice");
 const ApiResponse = require("../dto/responseDto");
-const { checkExistingAccount } = require("../function/checkExistingAccount");
+const { checkExistingAccount } = require("../functions/checkExistingAccount");
+const { decodeToken } = require('../functions/decodeToken'); 
+
 
 const calculateExpiryDate = (days) => {
   const now = new Date();

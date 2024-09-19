@@ -1,7 +1,9 @@
 const SubscriptionVAS = require("../models/SubscriptionBased");
 const Subscription = require("../models/Subscription");
 const ApiResponse = require("../dto/responseDto");
-const { checkExistingAccount } = require("../function/checkExistingAccount");
+const { checkExistingAccount } = require("../functions/checkExistingAccount");
+const { decodeToken } = require('../functions/decodeToken'); 
+
 
 const calculateExpiryDate = (days) => {
   const now = new Date();

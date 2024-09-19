@@ -1,5 +1,7 @@
 const DataPackage = require("../models/DataPackages");
 const ApiResponse = require("../dto/responseDto");
+const { decodeToken } = require('../functions/decodeToken'); 
+
 
 const createDataPackage = async (req, res) => {
   const { name, description, dataAmount, price, durationInDays } = req.body;

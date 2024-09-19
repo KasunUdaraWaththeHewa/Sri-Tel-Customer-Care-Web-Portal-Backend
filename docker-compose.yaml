@@ -60,6 +60,7 @@ services:
     environment:
       - PORT=4901
 
+
     # command: ["pnpm", "i" ]
     # entrypoint: ["pnpm", "dev"]
     entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
@@ -82,6 +83,7 @@ services:
     working_dir: /app
     environment:
       - PORT=4902
+
 
     # entrypoint: ["pnpm", "dev"]
     entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
@@ -155,6 +157,8 @@ services:
     environment:
       - PORT=4906
       - MONGODB_URL=mongodb://mongodb-chat:27017/chatService # Environment variable for MongoDB connection
+      - JWT_SECRET_KEY=M5vH+hjjkkPdcuB4EI7EuVgQrq9hSOZ6w3/rYFtE0tUaSGh6A+aWV/qc0i9mebYr0bnatT6Bvllwx/HizXvj6Q==
+
     entrypoint: ["sh", "-c", "pnpm i && pnpm dev"] # Install dependencies and start the service
     networks:
       - st_sritel-network
@@ -174,6 +178,8 @@ services:
     environment:
       - PORT=4904
       - MONGODB_URL=mongodb://mongodb-3:27017/billService
+      - JWT_SECRET_KEY=M5vH+hjjkkPdcuB4EI7EuVgQrq9hSOZ6w3/rYFtE0tUaSGh6A+aWV/qc0i9mebYr0bnatT6Bvllwx/HizXvj6Q==
+
     entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
     networks:
       - st_sritel-network
@@ -193,6 +199,8 @@ services:
     environment:
       - PORT=4905
       - MONGODB_URL=mongodb://mongodb-4:27017/customerService
+      - JWT_SECRET_KEY=M5vH+hjjkkPdcuB4EI7EuVgQrq9hSOZ6w3/rYFtE0tUaSGh6A+aWV/qc0i9mebYr0bnatT6Bvllwx/HizXvj6Q==
+
     entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
     networks:
       - st_sritel-network
@@ -213,6 +221,8 @@ services:
     environment:
       - PORT=4909
       - MONGODB_URL=mongodb://mongodb-5:27017/valueAddedService
+      - JWT_SECRET_KEY=M5vH+hjjkkPdcuB4EI7EuVgQrq9hSOZ6w3/rYFtE0tUaSGh6A+aWV/qc0i9mebYr0bnatT6Bvllwx/HizXvj6Q==
+
     entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
     networks:
       - st_sritel-network
@@ -232,6 +242,8 @@ services:
       - "4908:4908"
     environment:
       - PORT=4908
+      - JWT_SECRET_KEY=M5vH+hjjkkPdcuB4EI7EuVgQrq9hSOZ6w3/rYFtE0tUaSGh6A+aWV/qc0i9mebYr0bnatT6Bvllwx/HizXvj6Q==
+
     command: air
     networks:
       - st_sritel-network
