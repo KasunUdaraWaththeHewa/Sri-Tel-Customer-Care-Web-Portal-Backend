@@ -68,3 +68,12 @@ exports.getBillStatus = async (billId) => {
     throw error;
   }
 };
+
+exports.getBillById = async (billId) => {
+  try {
+    const bill = await Bill.findById(billId);
+    return bill;
+  } catch (error) {
+    throw new Error("Error fetching bill by ID: " + error.message);
+  }
+};

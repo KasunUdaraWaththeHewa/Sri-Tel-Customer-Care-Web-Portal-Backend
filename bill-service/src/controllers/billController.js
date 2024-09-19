@@ -1,6 +1,6 @@
 const billService = require("../services/billService");
-const { decodeToken } = require('../functions/decodeToken'); 
-
+const { decodeToken } = require("../functions/decodeToken");
+const axios = require("axios");
 
 // Create a new bill
 exports.createBill = async (req, res) => {
@@ -22,6 +22,22 @@ exports.recordPayment = async (req, res) => {
       amount,
       paymentMethod
     );
+
+    // Deduct the payment amount from the customer's total outstanding
+    const bill = await billService.getBillById(billId);
+    const accountId = bill.accountId;
+    await axios.post(
+      `http://bff:4901/api/proxy/forward/customer/outstanding/${accountId}`,
+      {
+        amount: -amount,
+      },
+      {
+        headers: {
+          Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGY3YTdlMWI0ZTRhN2YyZDhjOGM0YjQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjY3NDEzNjAsImV4cCI6MjY3MzQ2OTM2MH0.oWTogdxmge7I4IsGptQPetjz4tTb1OncNnPHmdDMVMs`,
+        },
+      }
+    );
+
     res.status(200).json(payment);
   } catch (error) {
     res.status(500).json({ message: error.message });
