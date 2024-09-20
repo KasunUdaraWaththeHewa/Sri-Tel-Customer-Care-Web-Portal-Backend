@@ -60,7 +60,6 @@ const signupUser = async (req, res) => {
       role,
     });
     const token = createToken(user._id, user.role);
-    console.log("token at signup in auth: " + token);
 
     const accountPayload = {
       email: user.email,
@@ -80,7 +79,6 @@ const signupUser = async (req, res) => {
     );
 
     if (customerResponse.status === 201) {
-      console.log("Signup successful");
       const response = new ApiResponse(
         true,
         200,
