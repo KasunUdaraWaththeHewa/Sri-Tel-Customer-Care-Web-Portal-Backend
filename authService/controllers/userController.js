@@ -266,11 +266,8 @@ const editProfileDetails = async (req, res) => {
 
 const deactivateAccount = async (req, res) => {
   const { id } = req.params;
-  console.log("id: " + id);
-
   try {
     const user = await User.findById(id);
-    console.log("user: " + user);
     if (!user) {
       const response = new ApiResponse(false, 404, "User not found", null);
       return res.status(404).json(response);
