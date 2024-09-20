@@ -1,13 +1,20 @@
 const ToneCatalog = require("../models/ToneCatelog");
-const { decodeToken } = require('../functions/decodeToken'); 
-
+const { decodeToken } = require("../functions/decodeToken");
+const ApiResponse = require("../dto/responseDto");
 
 const getAvailableTones = async (req, res) => {
   try {
     const tones = await ToneCatalog.find();
-    res.json(tones);
+    const response = new ApiResponse(
+      false,
+      200,
+      "Available tones fetched",
+      tones
+    );
+    res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch tones" });
+    const response = new ApiResponse(false, 500, "Failed to fetch tones", null);
+    res.status(500).json(response);
   }
 };
 
@@ -16,9 +23,16 @@ const addToneToCatalog = async (req, res) => {
   try {
     const newTone = new ToneCatalog({ toneName, toneDescription, price });
     await newTone.save();
-    res.status(201).json(newTone);
+    const response = new ApiResponse(
+      true,
+      201,
+      "New tone added to catelog",
+      null
+    );
+    res.status(201).json(response);
   } catch (error) {
-    res.status(400).json({ error: "Failed to add tone" });
+    const response = new ApiResponse(false, 500, "Failed to add tone", null);
+    res.status(500).json(response);
   }
 };
 

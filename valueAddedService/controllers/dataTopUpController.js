@@ -32,7 +32,6 @@ const topUpData = async (req, res) => {
       expiryDate,
       price,
     });
-
     await topUp.save();
 
     const response = new ApiResponse(

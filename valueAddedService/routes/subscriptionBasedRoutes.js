@@ -4,6 +4,7 @@ const {
   deactivateSubscription,
   getAllActiveSubscriptions,
 } = require("../controllers/subscriptionBasedController");
+
 const router = express.Router();
 
 router.put("/activate-subscription", activateSubscription);
