@@ -226,30 +226,6 @@ const editProfileDetails = async (req, res) => {
       return res.status(404).json(response);
     }
 
-    const isExistingNumber = await User.findOne({ phoneNumber });
-    if (isExistingNumber) {
-      const response = new ApiResponse(
-        false,
-        400,
-        "Account with this number already exists.",
-        null
-      );
-      res.status(400).json(response);
-      return;
-    }
-
-    const isExistingNIC = await User.findOne({ nic });
-    if (isExistingNIC) {
-      const response = new ApiResponse(
-        false,
-        400,
-        "Account with this NIC already exists.",
-        null
-      );
-      res.status(400).json(response);
-      return;
-    }
-
     if (fullName) user.fullName = fullName;
     if (dateOfBirth) user.dateOfBirth = dateOfBirth;
     if (phoneNumber) user.phoneNumber = phoneNumber;
