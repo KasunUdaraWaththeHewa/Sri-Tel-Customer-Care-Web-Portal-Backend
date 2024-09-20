@@ -365,9 +365,25 @@ public class ProxyController {
             ApiResponse<?> backendResponse = objectMapper.readValue(response.getBody(), new TypeReference<>() {});
 
             return ResponseEntity.ok(new ApiResponse<>(true, backendResponse.getStatusCode(), backendResponse.getMessage(), backendResponse.getData()));
+        // } catch (Exception e) {
+        //     logger.error("Error forwarding request: ", e);
+        //     return ResponseEntity.ok(new ApiResponse<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null));
+        // }
+        } catch (HttpClientErrorException e) {
+            // Handle 4xx errors from the backend
+            logger.error("Client error forwarding request: ", e);
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+            
+        } catch (HttpServerErrorException e) {
+            // Handle 5xx errors from the backend
+            logger.error("Server error forwarding request: ", e);
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+            
         } catch (Exception e) {
+            // Handle any other errors
             logger.error("Error forwarding request: ", e);
-            return ResponseEntity.ok(new ApiResponse<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null));
         }
     }
 
