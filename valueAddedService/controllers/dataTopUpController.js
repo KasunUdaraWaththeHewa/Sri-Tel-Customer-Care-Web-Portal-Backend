@@ -11,7 +11,7 @@ const calculateExpiryDate = (days) => {
 };
 
 const topUpData = async (req, res) => {
-  const { accountID, email, dataAmount, durationInDays, price } = req.body;
+  const { accountID, email, dataAmount, durationInDays, price , packageID} = req.body;
   const existingAccount = checkExistingAccount(accountID);
 
     if (!existingAccount) {
@@ -28,6 +28,7 @@ const topUpData = async (req, res) => {
       accountID,
       email,
       dataAmount,
+      packageID,
       expiryDate,
       price,
     });

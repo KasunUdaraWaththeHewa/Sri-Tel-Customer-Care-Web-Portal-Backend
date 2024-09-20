@@ -12,6 +12,7 @@ const DataSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    packageID: { type: String, required: true },
     dataAmount: { type: Number, required: true }, // Amount in MB/GB
     price: { type: Number, required: true },
     activationDate: { type: Date, default: Date.now },

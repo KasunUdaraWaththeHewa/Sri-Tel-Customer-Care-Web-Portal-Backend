@@ -1,19 +1,23 @@
 const RingTone = require("../models/RingTone");
 const ApiResponse = require("../dto/responseDto");
 const { checkExistingAccount } = require("../functions/checkExistingAccount");
-const { decodeToken } = require('../functions/decodeToken'); 
-
+const { decodeToken } = require("../functions/decodeToken");
 
 const personalizeTone = async (req, res) => {
-  const { accountID, email, price,toneId, durationInDays } = req.body;
+  const { accountID, email, price, toneId, durationInDays } = req.body;
 
   try {
-    const existingAccount = checkExistingAccount(accountID);
+    const existingAccount = await checkExistingAccount(accountID);
 
     if (!existingAccount) {
       const response = new ApiResponse(false, 404, "Account not found.", null);
       return res.status(404).json(response);
     }
+
+    await RingTone.updateMany(
+      { accountID, isActive: true },
+      { $set: { isActive: false } }
+    );
 
     const expiryDate = durationInDays
       ? calculateExpiryDate(durationInDays)
@@ -25,6 +29,7 @@ const personalizeTone = async (req, res) => {
       price,
       toneId,
       expiryDate,
+      isActive: true,
     });
 
     await tone.save();
@@ -32,7 +37,7 @@ const personalizeTone = async (req, res) => {
     const response = new ApiResponse(
       true,
       201,
-      "Ring-back tone personalized!",
+      "Ring-back tone personalized and activated!",
       tone
     );
     res.status(201).json(response);

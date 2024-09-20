@@ -14,48 +14,38 @@ const calculateExpiryDate = (days) => {
 const activateSubscription = async (req, res) => {
   const { accountID, email, subscriptionId, price, durationInDays } = req.body;
   try {
-    const existingAccount = checkExistingAccount(accountID);
-
+    const existingAccount = await checkExistingAccount(accountID);
     if (!existingAccount) {
-      const response = new ApiResponse(false, 404, "Account not found.", null);
-      return res.status(404).json(response);
+      return res.status(404).json(new ApiResponse(false, 404, "Account not found.", null));
     }
 
     const subscription = await Subscription.findById(subscriptionId);
     if (!subscription) {
-      const response = new ApiResponse(
-        false,
-        404,
-        "Subscription not found",
-        null
-      );
-      return res.status(404).json(response);
+      return res.status(404).json(new ApiResponse(false, 404, "Subscription not found.", null));
     }
 
     let subscriptionVAS = await SubscriptionVAS.findOne({
       accountID,
       subscriptionId,
+      isActive: true,
     });
 
     if (subscriptionVAS) {
-      if (subscriptionVAS.isActive) {
-        const response = new ApiResponse(
-          false,
-          400,
-          "Subscription already active",
-          null
-        );
-        return res.status(400).json(response);
-      }
+      return res.status(400).json(new ApiResponse(false, 400, "Subscription already active.", null));
+    }
 
-      // Update existing subscriptionVAS
+    subscriptionVAS = await SubscriptionVAS.findOne({
+      accountID,
+      subscriptionId,
+    });
+
+    if (subscriptionVAS) {
       subscriptionVAS.isActive = true;
       subscriptionVAS.subscriptionDate = Date.now();
-      subscriptionVAS.expiryDate = subscription.durationInDays
-        ? calculateExpiryDate(subscription.durationInDays)
-        : null;
+      subscriptionVAS.expiryDate = durationInDays
+        ? calculateExpiryDate(durationInDays)
+        : calculateExpiryDate(subscription.durationInDays || 30);
     } else {
-      // Create new subscriptionVAS
       subscriptionVAS = new SubscriptionVAS({
         accountID,
         email,
@@ -63,29 +53,17 @@ const activateSubscription = async (req, res) => {
         price,
         isActive: true,
         subscriptionDate: Date.now(),
-        expiryDate: subscription.durationInDays
-          ? calculateExpiryDate(subscription.durationInDays)
-          : null,
+        expiryDate: durationInDays
+          ? calculateExpiryDate(durationInDays)
+          : calculateExpiryDate(subscription.durationInDays || 30),
       });
     }
 
     await subscriptionVAS.save();
 
-    const response = new ApiResponse(
-      true,
-      201,
-      `${subscription.name} activated successfully!`,
-      subscriptionVAS
-    );
-    res.status(201).json(response);
+    res.status(201).json(new ApiResponse(true, 201, `${subscription.name} activated successfully!`, subscriptionVAS));
   } catch (error) {
-    const response = new ApiResponse(
-      false,
-      500,
-      "Server error while activating subscription.",
-      null
-    );
-    res.status(500).json(response);
+    res.status(500).json(new ApiResponse(false, 500, "Server error while activating subscription.", null));
   }
 };
 
