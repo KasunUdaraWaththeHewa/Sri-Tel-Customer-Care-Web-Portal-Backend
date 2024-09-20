@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 const validator = require("validator");
 const crypto = require("crypto");
+const sendEmail = require("../functions/sendMail");
 
 const userSchema = new Schema({
   email: {
@@ -243,9 +244,11 @@ userSchema.statics.resetPassword = async function (
 };
 
 const sendResetTokenEmail = (email, resetToken) => {
-  // Implement email sending logic here
-  // This could involve integrating with an email service provider
-  console.log(`Password reset token sent to ${email}: ${resetToken}`);
+  sendEmail({
+    email,
+    subject: "Password Reset Token",
+    message: `Your password reset token is: ${resetToken}`,
+  });
 };
 
 module.exports = mongoose.model("User", userSchema);
