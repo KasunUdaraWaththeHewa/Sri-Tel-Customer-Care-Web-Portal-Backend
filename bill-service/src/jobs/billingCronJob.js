@@ -16,9 +16,9 @@ const notification = async (emailAddress, msg, title) => {
   try {
     await producer.connect();
     const message = JSON.stringify({
-      emailAddress: emailAddress,
+      email: emailAddress,
       msg: msg,
-      type: title,
+      title: title,
     });
 
     await producer.send({
@@ -55,7 +55,7 @@ const runBillingJob = async () => {
     ).getDate();
 
     // if (today.getDate() === lastDay) {
-    if (true) {
+    if (today.getDate() === lastDay) {
       console.log("Running monthly billing job...");
 
       // Fetch all accounts from the BFF (Customer Service via proxy)
