@@ -9,10 +9,23 @@ const Chat = require('./models/ChatModel'); // Correct the path to your model if
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server);
+
 
 // Middleware
-app.use(cors());
+app.use('/api/chat', cors({
+    origin: 'http://localhost:3400', // Allow only specific origins
+    optionsSuccessStatus: 200, // For legacy browsers
+    methods: "GET,POST,PUT,DELETE", // Allowed request methods
+    // allowedHeaders: "Content-Type,Authorization" // Allowed headers
+}));
+
+const io = socketIO(server, {
+    cors: {
+        origin: 'http://localhost:3400',
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    }
+});
+
 app.use(express.json());
 
 // MongoDB Connection
@@ -38,7 +51,14 @@ io.on('connection', (socket) => {
     
     socket.on('sendMessage', async (messageData) => {    
         const { room, message, senderId } = messageData;
+
+        // socket.emit('receiveMessage', "Thank you for your message. We will get back to you shortly.");
+        // with timeout
         
+        setTimeout(() => {
+            socket.emit('receiveMessage', "Thank you for your message. We will get back to you shortly.");
+        }
+        , 500);
     
         // Check if all fields are present
         if (!room || !message || !senderId) {
