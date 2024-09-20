@@ -2,8 +2,7 @@ const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
 const ApiResponse = require("../dto/responseDto");
 const axios = require("axios");
-const { decodeToken } = require('../functions/decodeToken'); 
-
+const { decodeToken } = require("../functions/decodeToken");
 
 const createToken = (_id, role) => {
   return jwt.sign({ _id, role }, process.env.JWT_SECRET_KEY, {
@@ -174,10 +173,10 @@ const resetPassword = async (req, res) => {
 };
 
 const getProfileDetails = async (req, res) => {
-  const { email } = req.body;
+  const id = decodeToken(req.headers.authorization)._id;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findById(id);
 
     if (!user) {
       const response = new ApiResponse(false, 404, "User not found", null);
@@ -290,11 +289,12 @@ const editProfileDetails = async (req, res) => {
 };
 
 const deactivateAccount = async (req, res) => {
-  const { email } = req.body;
+  const { id } = req.params;
+  console.log("id: " + id);
 
   try {
-    const user = await User.findOne({ email });
-
+    const user = await User.findById(id);
+    console.log("user: " + user);
     if (!user) {
       const response = new ApiResponse(false, 404, "User not found", null);
       return res.status(404).json(response);
@@ -332,10 +332,10 @@ const deactivateAccount = async (req, res) => {
 };
 
 const activateAccount = async (req, res) => {
-  const { email } = req.body;
+  const { id } = req.params;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findById(id);
 
     if (!user) {
       const response = new ApiResponse(false, 404, "User not found", null);
@@ -375,10 +375,10 @@ const activateAccount = async (req, res) => {
 };
 
 const isInActiveUser = async (req, res) => {
-  const { email } = req.body;
+  const { id } = req.params;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findById(id);
 
     if (!user) {
       const response = new ApiResponse(false, 404, "User not found", null);
