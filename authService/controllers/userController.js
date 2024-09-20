@@ -18,13 +18,9 @@ const loginUser = async (req, res) => {
     const user = await User.login({ email, password });
 
     if (user.status === "inactive") {
-      const response = new ApiResponse(
-        false,
-        403,
-        "Account is deactivated. Please activate your account first",
-        null
-      );
-      return res.status(403).json(response);
+      user.status = "active";
+      user.updatedAt = Date.now();
+      await user.save();
     }
 
     const token = createToken(user._id, user.role);
