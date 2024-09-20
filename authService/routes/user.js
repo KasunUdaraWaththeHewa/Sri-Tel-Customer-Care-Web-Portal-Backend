@@ -14,14 +14,14 @@ router.post('/forgotpassword', forgotPassword);
 
 router.post('/resetpassword', resetPassword);
 
-router.post('/getProfileDetails/:email', getProfileDetails);
+router.post('/getProfileDetails', getProfileDetails);
 
 router.put('/editProfileDetails', editProfileDetails);
 
-router.put('/deactivateAccount/:email', deactivateAccount);
+router.put('/deactivateAccount/:id', deactivateAccount);
 
-router.put('/activateAccount/:email', activateAccount);
+router.put('/activateAccount/:id', activateAccount);
 
-router.post('/isInActiveUser/:email', isInActiveUser);
+router.post('/isInActiveUser/:id', isInActiveUser);
 
 module.exports = router;
