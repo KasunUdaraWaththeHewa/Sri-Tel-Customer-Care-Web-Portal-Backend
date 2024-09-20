@@ -1,9 +1,9 @@
 const axios = require("axios");
 
-const checkExistingUser = async (email, token) => {
+const checkExistingUser = async (id, token) => {
   try {
     //hari token eka capture krgnn one. eka hari giyoth wade hari yawi
-    const authServiceUrl = `http://bff:4901/api/proxy/forward/user/getProfileDetails/${email}`;
+    const authServiceUrl = `http://bff:4901/api/proxy/forward/user/getProfileDetails/${id}`;
 
     const authResponse = await axios.post(
       authServiceUrl,

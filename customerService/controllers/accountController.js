@@ -8,8 +8,8 @@ const createAccount = async (req, res) => {
   try {
     const { email, number, userID, accountType } = req.body;
     const token = captureToken(req);
-    console.log("token captured by customerservice: ", token);
-    const existingUser = checkExistingUser(email, token);
+    const user_id = decodeToken(token)._id;
+    const existingUser = checkExistingUser(user_id, token);
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
       res.status(404).json(response);
@@ -54,10 +54,12 @@ const createAccount = async (req, res) => {
 
 const updateAccount = async (req, res) => {
   const { id } = req.params;
-  const { email, accountType, number } = req.body;
+  const { accountType, number } = req.body;
 
   try {
-    const existingUser = await checkExistingUser(email);
+    const token = captureToken(req);
+    const user_id = decodeToken(token)._id;
+    const existingUser = checkExistingUser(user_id, token);
 
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
@@ -105,10 +107,12 @@ const updateAccount = async (req, res) => {
 };
 
 const activateAccount = async (req, res) => {
-  const { accountID, email } = req.body;
+  const { accountID } = req.body;
 
   try {
-    const existingUser = checkExistingUser(email);
+    const token = captureToken(req);
+    const user_id = decodeToken(token)._id;
+    const existingUser = checkExistingUser(user_id, token);
 
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
@@ -141,10 +145,12 @@ const activateAccount = async (req, res) => {
 };
 
 const deactivateAccount = async (req, res) => {
-  const { accountID, email } = req.body;
+  const { accountID } = req.body;
 
   try {
-    const existingUser = checkExistingUser(email);
+    const token = captureToken(req);
+    const user_id = decodeToken(token)._id;
+    const existingUser = checkExistingUser(user_id, token);
 
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
@@ -179,10 +185,12 @@ const deactivateAccount = async (req, res) => {
 };
 
 const suspendAccount = async (req, res) => {
-  const { accountID, email } = req.body;
+  const { accountID } = req.body;
 
   try {
-    const existingUser = checkExistingUser(email);
+    const token = captureToken(req);
+    const user_id = decodeToken(token)._id;
+    const existingUser = checkExistingUser(user_id, token);
 
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
@@ -217,17 +225,18 @@ const suspendAccount = async (req, res) => {
 };
 
 const getAllAccountsForCustomer = async (req, res) => {
-  const { email } = req.params;
-
+  
   try {
-    const existingUser = checkExistingUser(email);
+    const token = captureToken(req);
+    const user_id = decodeToken(token)._id;
+    const existingUser = checkExistingUser(user_id, token);
 
     if (!existingUser) {
       const response = new ApiResponse(false, 404, "User not found.", null);
       return res.status(404).json(response);
     }
 
-    const accounts = await Account.find({ email: email });
+    const accounts = await Account.find({ userID: user_id });
 
     if (!accounts.length) {
       return res
