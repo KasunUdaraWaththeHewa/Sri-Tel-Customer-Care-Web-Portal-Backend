@@ -8,3 +8,5 @@ pnpm
 tmp
 temp
 postgres-data
+
+**/.DS_Store
