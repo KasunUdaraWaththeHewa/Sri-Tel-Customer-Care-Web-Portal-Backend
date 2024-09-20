@@ -15,7 +15,7 @@ const produceMessage = async () => {
     const message = JSON.stringify({
       email: "example@example.com",
       msg: "Hello KafkaJS!",
-      type: "Notification"
+      title: "Notification"
     });
 
     await producer.send({
@@ -42,7 +42,7 @@ const notification = async (emailAddress: string, msg: string, title: string): P
     const message = JSON.stringify({
       emailAddress: emailAddress,
       msg: msg,
-      type: title
+      title: title
     });
 
     await producer.send({
