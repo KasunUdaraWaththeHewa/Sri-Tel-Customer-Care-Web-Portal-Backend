@@ -58,4 +58,27 @@ const calculateExpiryDate = (days) => {
   return now;
 };
 
-module.exports = { personalizeTone };
+const getAllActiveTones = async (req, res) => {
+  const { accountID } = req.params;
+  try {
+    const tones = await RingTone.find({ isActive: true, accountID });
+    const response = new ApiResponse(
+      true,
+      200,
+      "Active ring-back tones retrieved successfully!",
+      tones
+    );
+    res.status(200).json(response);
+  } catch (error) {
+    const response = new ApiResponse(
+      false,
+      500,
+      "Server error while retrieving active ring-back tones.",
+      null
+    );
+    res.status(500).json(response);
+  }
+}
+
+
+module.exports = { personalizeTone, getAllActiveTones };

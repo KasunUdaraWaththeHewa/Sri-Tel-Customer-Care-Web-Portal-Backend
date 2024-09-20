@@ -119,4 +119,28 @@ const deactivateData = async (req, res) => {
   }
 };
 
-module.exports = { activateData, deactivateData };
+const getAllActiveDataPackages = async (req, res) => {
+  const { accountID } = req.params;
+  try {
+    
+    const dataPackages = await Data.find({ isActive: true, accountID });
+    const response = new ApiResponse(
+      true,
+      200,
+      "All active data packages fetched successfully!",
+      dataPackages
+    );
+    res.status(200).json(response);
+  } catch (error) {
+    const response = new ApiResponse(
+      false,
+      500,
+      "Server error while fetching active data packages.",
+      null
+    );
+    res.status(500).json(response);
+  }
+
+};
+
+module.exports = { activateData, deactivateData, getAllActiveDataPackages };

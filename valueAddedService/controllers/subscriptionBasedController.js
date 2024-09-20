@@ -115,4 +115,29 @@ const deactivateSubscription = async (req, res) => {
   }
 };
 
-module.exports = { activateSubscription, deactivateSubscription };
+
+const getAllActiveSubscriptions = async (req, res) => {
+  const { accountID } = req.params;
+  try {
+    const subscriptions = await SubscriptionVAS.find({ isActive: true , accountID });
+    const response = new ApiResponse(
+      true,
+      200,
+      "All active subscriptions retrieved.",
+      subscriptions
+    );
+    res.status(200).json(response);
+  } catch (error) {
+    const response = new ApiResponse(
+      false,
+      500,
+      "Server error while retrieving active subscriptions.",
+      null
+    );
+    res.status(500).json(response);
+  }
+}
+
+
+
+module.exports = { activateSubscription, deactivateSubscription, getAllActiveSubscriptions };

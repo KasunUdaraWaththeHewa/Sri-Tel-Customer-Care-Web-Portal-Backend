@@ -64,4 +64,24 @@ const deactivateRoaming = async (req, res) => {
   }
 };
 
-module.exports = { activateRoaming, deactivateRoaming };
+const isActiveRoaming = async (req, res) => {
+  const { accountID } = req.params;
+
+  try {
+    const roaming = await InternationalRoaming.find({ accountID, roamingStatus: true });
+
+    if (!roaming) {
+      const response = new ApiResponse(false, 404, "International roaming service not found.", null);
+      return res.status(404).json(response);
+    }
+
+    const response = new ApiResponse(true, 200, "International roaming service found.", { isActive: roaming.roamingStatus });
+    res.status(200).json(response);
+
+  } catch (error) {
+    const response = new ApiResponse(false, 500, "Server error while checking roaming status.", null);
+    res.status(500).json(response);
+  }
+}
+
+module.exports = { activateRoaming, deactivateRoaming, isActiveRoaming };

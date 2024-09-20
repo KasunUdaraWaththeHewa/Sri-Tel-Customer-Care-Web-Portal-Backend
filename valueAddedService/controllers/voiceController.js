@@ -89,4 +89,16 @@ const deactivateVoice = async (req, res) => {
   }
 };
 
-module.exports = { activateVoice, deactivateVoice };
+const getAllActivatedVoice = async (req, res) => {
+  const { accountID } = req.params;
+  try {
+    const voices = await Voice.find({ isActive: true , accountID });
+    const response = new ApiResponse(true, 200, "All active voice packages found.", voices);
+    res.status(200).json(response);
+  } catch (error) {
+    const response = new ApiResponse(false, 500, "Server error while fetching active voice packages.", null);
+    res.status(500).json(response);
+  }
+};
+
+module.exports = { activateVoice, deactivateVoice ,getAllActivatedVoice};

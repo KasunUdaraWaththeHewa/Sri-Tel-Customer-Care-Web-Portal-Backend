@@ -53,4 +53,27 @@ const topUpData = async (req, res) => {
   }
 };
 
-module.exports = { topUpData };
+const getAllActiveDataTopUps = async (req, res) => {
+  const { accountID } = req.params;
+  try {
+    const dataTopUps = await DataTopUp.find({ isActive: true , accountID });
+    const response = new ApiResponse(
+      true,
+      200,
+      "All active data top-ups retrieved.",
+      dataTopUps
+    );
+    res.status(200).json(response);
+  } catch (error) {
+    const response = new ApiResponse(
+      false,
+      500,
+      "Server error while retrieving active data top-ups.",
+      null
+    );
+    res.status(500).json(response);
+  }
+
+}
+
+module.exports = { topUpData, getAllActiveDataTopUps };
