@@ -12,6 +12,7 @@ const VoiceSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    packageID: { type: String, required: true },
     voiceMinutes: { type: Number, required: true }, // Minutes of voice usage
     price: { type: Number, required: true },
     activationDate: { type: Date, default: Date.now },

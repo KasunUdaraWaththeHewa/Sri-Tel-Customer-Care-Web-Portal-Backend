@@ -12,6 +12,7 @@ const DataTopUpSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    pakageID: { type: String, required: true },
     dataAmount: { type: Number, required: true }, // Amount in MB/GB
     price: { type: Number, required: true },
     topUpDate: { type: Date, default: Date.now },

@@ -1,8 +1,7 @@
 const Data = require("../models/Data");
 const ApiResponse = require("../dto/responseDto");
 const { checkExistingAccount } = require("../functions/checkExistingAccount");
-const { decodeToken } = require('../functions/decodeToken'); 
-
+const { decodeToken } = require("../functions/decodeToken");
 
 const calculateExpiryDate = (days) => {
   const now = new Date();
@@ -11,60 +10,51 @@ const calculateExpiryDate = (days) => {
 };
 
 const activateData = async (req, res) => {
-  const { accountID, email, dataAmount, price, durationInDays } = req.body;
+  const { accountID, email, dataAmount, price, durationInDays, packageID } =
+    req.body;
   try {
-    const existingData = await Data.findOne({ accountID, email });
-    const existingAccount = checkExistingAccount(accountID);
+    const existingAccount = await checkExistingAccount(accountID);
 
     if (!existingAccount) {
       const response = new ApiResponse(false, 404, "Account not found.", null);
       return res.status(404).json(response);
     }
+    const isDataPackageActive = await Data.findOne({
+      accountID,
+      packageID,
+      isActive: true,
+    });
 
-    if (existingData) {
-      if (existingData.isActive) {
-        const response = new ApiResponse(
-          false,
-          400,
-          "Data package already active.",
-          null
-        );
-        return res.status(400).json(response);
-      }
-      existingData.activationDate = Date.now();
-      existingData.deactivatedDate = null;
-      existingData.isActive = true;
-      existingData.expiryDate = calculateExpiryDate(
-        existingData.durationInDays || 30
-      );
-      await existingData.save();
-
+    if (isDataPackageActive) {
       const response = new ApiResponse(
-        true,
-        200,
-        "Data package activated successfully!",
-        existingData
+        false,
+        400,
+        "Data package already active.",
+        null
       );
-      res.status(200).json(response);
-    } else {
-      const newData = new Data({
-        accountID,
-        email,
-        dataAmount,
-        price,
-        activationDate: Date.now(),
-        expiryDate: calculateExpiryDate(durationInDays),
-      });
-      await newData.save();
-
-      const response = new ApiResponse(
-        true,
-        201,
-        "Data package created and activated successfully!",
-        newData
-      );
-      res.status(201).json(response);
+      return res.status(400).json(response);
     }
+
+    const newData = new Data({
+      accountID,
+      email,
+      dataAmount,
+      packageID,
+      price,
+      activationDate: Date.now(),
+      expiryDate: calculateExpiryDate(durationInDays || 30),
+      isActive: true,
+    });
+
+    await newData.save();
+
+    const response = new ApiResponse(
+      true,
+      201,
+      "New data package activated successfully!",
+      newData
+    );
+    res.status(201).json(response);
   } catch (error) {
     const response = new ApiResponse(
       false,
@@ -77,7 +67,7 @@ const activateData = async (req, res) => {
 };
 
 const deactivateData = async (req, res) => {
-  const { accountID, email } = req.body;
+  const { accountID, packageID } = req.body;
   try {
     const existingAccount = checkExistingAccount(accountID);
 
@@ -85,7 +75,7 @@ const deactivateData = async (req, res) => {
       const response = new ApiResponse(false, 404, "Account not found.", null);
       return res.status(404).json(response);
     }
-    const data = await Data.findOne({ accountID, email });
+    const data = await Data.findOne({ accountID, packageID});
 
     if (!data) {
       const response = new ApiResponse(
