@@ -1,6 +1,38 @@
 const cron = require("node-cron");
 const axios = require("axios");
 const Bill = require("../models/Bill");
+const { Kafka } = require("kafkajs");
+
+// Kafka configuration
+const kafka = new Kafka({
+  clientId: "my-app",
+  brokers: ["kafka:9092"],
+});
+
+const producer = kafka.producer();
+
+// produce message function
+const notification = async (emailAddress, msg, title) => {
+  try {
+    await producer.connect();
+    const message = JSON.stringify({
+      emailAddress: emailAddress,
+      msg: msg,
+      type: title,
+    });
+
+    await producer.send({
+      topic: "notification",
+      messages: [{ value: message }],
+    });
+
+    console.log("Message sent successfully");
+  } catch (error) {
+    console.error("Failed to send message:", error);
+  } finally {
+    await producer.disconnect();
+  }
+};
 
 // Function to run the billing logic
 const runBillingJob = async () => {
@@ -23,7 +55,7 @@ const runBillingJob = async () => {
     ).getDate();
 
     // if (today.getDate() === lastDay) {
-    if (today.getDate() === lastDay) {
+    if (true) {
       console.log("Running monthly billing job...");
 
       // Fetch all accounts from the BFF (Customer Service via proxy)
@@ -88,6 +120,13 @@ const runBillingJob = async () => {
             }
           );
           console.log(`Updated totalOutstanding for account ${account._id}`);
+
+          // Send notification email to the customer
+          const emailAddress = account.email; // Assuming account object has an email field
+          const msg = `Your bill for the amount of ${totalBillingAmount} has been generated.`;
+          const title = "Monthly Bill";
+          await notification(emailAddress, msg, title);
+          console.log(`Notification sent to ${emailAddress}`);
         } catch (error) {
           console.error(
             `Error fetching billing amount for account ${account._id}: `,
