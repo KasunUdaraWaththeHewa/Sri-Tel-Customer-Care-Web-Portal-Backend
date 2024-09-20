@@ -1,5 +1,5 @@
 const express = require('express');
-const { personalizeTone } = require('../controllers/ringToneController');
+const { personalizeTone , getAllActiveTones } = require('../controllers/ringToneController');
 const router = express.Router();
 
 router.post('/personalize-tone', personalizeTone);

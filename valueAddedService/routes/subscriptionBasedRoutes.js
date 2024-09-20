@@ -1,5 +1,5 @@
 const express = require('express');
-const { activateSubscription, deactivateSubscription } = require('../controllers/subscriptionBasedController');
+const { activateSubscription, deactivateSubscription ,getAllActiveSubscriptions  } = require('../controllers/subscriptionBasedController');
 const router = express.Router();
 
 router.put('/activate-subscription', activateSubscription);
