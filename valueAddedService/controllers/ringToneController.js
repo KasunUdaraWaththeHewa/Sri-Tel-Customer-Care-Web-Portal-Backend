@@ -69,7 +69,7 @@ const calculateExpiryDate = (days) => {
 };
 
 const getAllActiveTones = async (req, res) => {
-  const { accountID } = req.body;
+  const { accountID } = req.params;
   try {
     const tones = await RingTone.find({ isActive: true, accountID });
     const response = new ApiResponse(
