@@ -3,6 +3,7 @@ const ApiResponse = require("../dto/responseDto");
 const { checkExistingAccount } = require("../functions/checkExistingAccount");
 const { decodeToken } = require("../functions/decodeToken");
 
+
 const personalizeTone = async (req, res) => {
   const { accountID, email, price, toneId, durationInDays } = req.body;
 
@@ -26,9 +27,6 @@ const personalizeTone = async (req, res) => {
       { $set: { isActive: false } }
     );
 
-    const expiryDate = durationInDays
-      ? calculateExpiryDate(durationInDays)
-      : null;
 
     const tone = new RingTone({
       packageName: isTone.name,
@@ -36,7 +34,7 @@ const personalizeTone = async (req, res) => {
       email,
       price,
       toneId,
-      expiryDate,
+      expiryDate : calculateExpiryDate(durationInDays),
       isActive: true,
     });
 
