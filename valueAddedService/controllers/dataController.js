@@ -2,6 +2,7 @@ const Data = require("../models/Data");
 const ApiResponse = require("../dto/responseDto");
 const { checkExistingAccount } = require("../functions/checkExistingAccount");
 const { decodeToken } = require("../functions/decodeToken");
+const DataPackages = require("../models/DataPackages");
 
 const calculateExpiryDate = (days) => {
   const now = new Date();
@@ -19,11 +20,21 @@ const activateData = async (req, res) => {
       const response = new ApiResponse(false, 404, "Account not found.", null);
       return res.status(404).json(response);
     }
+
+    const isDataPackage = await DataPackages.findById(packageID);
+
+    if (!isDataPackage) {
+      const response = new ApiResponse(false, 404, "Data package not found.", null);
+      return res.status(404).json(response);
+    }
+
     const isDataPackageActive = await Data.findOne({
       accountID,
       packageID,
       isActive: true,
     });
+  
+    console.log(isDataPackage);
 
     if (isDataPackageActive) {
       const response = new ApiResponse(
@@ -35,7 +46,10 @@ const activateData = async (req, res) => {
       return res.status(400).json(response);
     }
 
+
+
     const newData = new Data({
+      packageName : isDataPackage.name,
       accountID,
       email,
       dataAmount,

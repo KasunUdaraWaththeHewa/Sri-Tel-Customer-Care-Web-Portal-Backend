@@ -21,6 +21,13 @@ const activateVoice = async (req, res) => {
       return res.status(404).json(response);
     }
 
+    const isVoicePackage = await Voice.findById(packageID);
+
+    if (!isVoicePackage) {
+      const response = new ApiResponse(false, 404, "Voice package not found.", null);
+      return res.status(404).json(response);
+    }
+
     const existingVoice = await Voice.findOne({ accountID, email, packageID });
 
     if (existingVoice) {
@@ -40,6 +47,7 @@ const activateVoice = async (req, res) => {
     }
 
     const newVoice = new Voice({
+      packageName: isVoicePackage.name,
       accountID,
       email,
       voiceMinutes,

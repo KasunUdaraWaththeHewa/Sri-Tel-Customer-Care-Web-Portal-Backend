@@ -2,6 +2,7 @@ const DataTopUp = require("../models/DataTopUp");
 const ApiResponse = require("../dto/responseDto");
 const { checkExistingAccount } = require("../functions/checkExistingAccount");
 const { decodeToken } = require('../functions/decodeToken'); 
+const DataTopUpPackage = require("../models/DataTopUpPackage");
 
 
 const calculateExpiryDate = (days) => {
@@ -19,12 +20,20 @@ const topUpData = async (req, res) => {
       return res.status(404).json(response);
     }
 
+    const isDataTopUpPackage = await DataTopUpPackage.findById(packageID);
+
+    if (!isDataTopUpPackage) {
+      const response = new ApiResponse(false, 404, "Data top-up package not found.", null);
+      return res.status(404).json(response);
+    }
+
   try {
     const expiryDate = durationInDays
       ? calculateExpiryDate(durationInDays)
       : null;
 
     const topUp = new DataTopUp({
+      packageName : isDataTopUpPackage.name,
       accountID,
       email,
       dataAmount,
