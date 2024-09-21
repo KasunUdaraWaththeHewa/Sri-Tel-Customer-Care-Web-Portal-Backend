@@ -8,7 +8,7 @@ const {
 const router = express.Router();
 
 router.post("/personalize-tone", personalizeTone);
-router.get("/active-tones", getAllActiveTones);
+router.get("/active-tones/:accountID", getAllActiveTones);
 router.post("/deactivate-tone", deactivateTone);
 
 module.exports = router;
