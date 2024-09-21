@@ -11,7 +11,7 @@ const calculateExpiryDate = (days) => {
 };
 
 const activateData = async (req, res) => {
-  const { accountID, email, dataAmount, price, durationInDays, packageID } =
+  const { accountID, dataAmount, price, durationInDays, packageID } =
     req.body;
   try {
     const existingAccount = await checkExistingAccount(accountID);
@@ -51,7 +51,6 @@ const activateData = async (req, res) => {
       features : isDataPackage.features,
       description : isDataPackage.description,
       accountID,
-      email,
       dataAmount,
       packageID,
       price,

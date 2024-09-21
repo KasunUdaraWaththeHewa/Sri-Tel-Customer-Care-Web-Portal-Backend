@@ -12,7 +12,7 @@ const calculateExpiryDate = (days) => {
 };
 
 const activateVoice = async (req, res) => {
-  const { accountID, email, voiceMinutes, price, durationInDays, packageID } = req.body; // Added packageID to identify specific voice package
+  const { accountID, voiceMinutes, price, durationInDays, packageID } = req.body; // Added packageID to identify specific voice package
 
   try {
     const existingAccount = checkExistingAccount(accountID);
@@ -21,15 +21,13 @@ const activateVoice = async (req, res) => {
       const response = new ApiResponse(false, 404, "Account not found.", null);
       return res.status(404).json(response);
     }
-    console.log(packageID);
     const isVoicePackage = await VoicePackage.findById(packageID);
-    console.log(isVoicePackage);
     if (!isVoicePackage) {
       const response = new ApiResponse(false, 404, "Voice package not found.", null);
       return res.status(404).json(response);
     }
 
-    const existingVoice = await Voice.findOne({ accountID, email, packageID });
+    const existingVoice = await Voice.findOne({ accountID, packageID });
 
     if (existingVoice) {
       if (existingVoice.isActive) {
@@ -52,7 +50,6 @@ const activateVoice = async (req, res) => {
       features: isVoicePackage.features,
       description: isVoicePackage.description,
       accountID,
-      email,
       voiceMinutes,
       price,
       packageID,

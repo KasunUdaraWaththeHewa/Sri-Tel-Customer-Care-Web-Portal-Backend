@@ -12,12 +12,6 @@ const DataSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    email: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-    },
     packageID: { type: String, required: true },
     dataAmount: { type: Number, required: true }, // Amount in MB/GB
     price: { type: Number, required: true },

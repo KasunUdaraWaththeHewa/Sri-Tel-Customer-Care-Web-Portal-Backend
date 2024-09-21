@@ -12,12 +12,6 @@ const SubscriptionVASchema = new mongoose.Schema(
       type: Object,
       required: true,
     },
-    email: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-    },
     subscriptionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Subscription",

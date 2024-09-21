@@ -12,7 +12,7 @@ const calculateExpiryDate = (days) => {
 };
 
 const activateSubscription = async (req, res) => {
-  const { accountID, email, subscriptionId, price, durationInDays } = req.body;
+  const { accountID, subscriptionId, price, durationInDays } = req.body;
   try {
     const existingAccount = await checkExistingAccount(accountID);
     if (!existingAccount) {
@@ -51,7 +51,6 @@ const activateSubscription = async (req, res) => {
         features: subscription.features,
         description: subscription.description,
         accountID,
-        email,
         subscriptionId,
         price,
         isActive: true,
