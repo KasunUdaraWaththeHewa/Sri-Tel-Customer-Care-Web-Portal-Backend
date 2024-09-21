@@ -48,6 +48,8 @@ const activateVoice = async (req, res) => {
 
     const newVoice = new Voice({
       packageName: isVoicePackage.name,
+      features: isVoicePackage.features,
+      description: isVoicePackage.description,
       accountID,
       email,
       voiceMinutes,

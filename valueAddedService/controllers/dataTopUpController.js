@@ -34,6 +34,8 @@ const topUpData = async (req, res) => {
 
     const topUp = new DataTopUp({
       packageName : isDataTopUpPackage.name,
+      features : isDataTopUpPackage.features,
+      description : isDataTopUpPackage.description,
       accountID,
       email,
       dataAmount,

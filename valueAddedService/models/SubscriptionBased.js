@@ -7,6 +7,11 @@ const SubscriptionVASchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
+    description: String,
+    features: {
+      type: Object,
+      required: true,
+    },
     email: {
       type: String,
       required: true,

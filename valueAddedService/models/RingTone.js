@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const RingToneSchema = new mongoose.Schema(
   {
     packageName: { type: String, required: true },
+    toneDescription: String,
     accountID: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

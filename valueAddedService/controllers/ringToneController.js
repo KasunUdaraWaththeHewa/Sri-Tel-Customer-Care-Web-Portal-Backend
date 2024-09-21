@@ -30,6 +30,7 @@ const personalizeTone = async (req, res) => {
 
     const tone = new RingTone({
       packageName: isTone.name,
+      packageName: isTone.toneDescription,
       accountID,
       email,
       price,
