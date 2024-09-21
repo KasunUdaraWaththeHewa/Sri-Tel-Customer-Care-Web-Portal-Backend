@@ -31,7 +31,7 @@ const activateVoice = async (req, res) => {
 
     if (existingVoice) {
       if (existingVoice.isActive) {
-        const response = new ApiResponse(false, 200, "This voice package is already active.", null);
+        const response = new ApiResponse(true, 200, "This voice package is already active.", null);
         return res.status(200).json(response);
       }
 
@@ -41,7 +41,7 @@ const activateVoice = async (req, res) => {
       existingVoice.expiryDate = calculateExpiryDate(existingVoice.durationInDays || 30);
       await existingVoice.save();
 
-      const response = new ApiResponse(true, 200, "Voice package activated successfully!", existingVoice);
+      const response = new ApiResponse(true, 201, "Voice package activated successfully!", existingVoice);
       return res.status(200).json(response);
     }
 
@@ -71,9 +71,9 @@ const activateVoice = async (req, res) => {
 
 
 const deactivateVoice = async (req, res) => {
-  const { accountID, email , packageID } = req.body;
+  const { accountID, packageID } = req.body;
   try {
-    const voice = await Voice.findOne({ accountID, email, packageID });
+    const voice = await Voice.findOne({ accountID, packageID });
     
     if (!voice) {
       const response = new ApiResponse(false, 404, "Voice package not found.", null);
