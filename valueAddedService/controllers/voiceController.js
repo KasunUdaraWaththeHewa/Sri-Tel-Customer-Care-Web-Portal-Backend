@@ -31,8 +31,8 @@ const activateVoice = async (req, res) => {
 
     if (existingVoice) {
       if (existingVoice.isActive) {
-        const response = new ApiResponse(false, 400, "This voice package is already active.", null);
-        return res.status(400).json(response);
+        const response = new ApiResponse(false, 200, "This voice package is already active.", null);
+        return res.status(200).json(response);
       }
 
       existingVoice.activationDate = Date.now();
@@ -81,16 +81,16 @@ const deactivateVoice = async (req, res) => {
     }
     
     if (!voice.isActive) {
-      const response = new ApiResponse(false, 400, "Voice package already inactive.", null);
-      return res.status(400).json(response);
+      const response = new ApiResponse(true, 200, "Voice package already inactive.", null);
+      return res.status(200).json(response);
     }
     
     voice.isActive = false;
     voice.deactivatedDate = Date.now();
     await voice.save();
     
-    const response = new ApiResponse(true, 200, "Voice package deactivated successfully!", voice);
-    res.status(200).json(response);
+    const response = new ApiResponse(true, 201, "Voice package deactivated successfully!", voice);
+    res.status(201).json(response);
   } catch (error) {
     const response = new ApiResponse(false, 500, "Server error while deactivating voice package.", null);
     res.status(500).json(response);

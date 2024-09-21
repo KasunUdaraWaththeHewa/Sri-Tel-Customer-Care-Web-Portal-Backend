@@ -31,7 +31,7 @@ const activateSubscription = async (req, res) => {
     });
 
     if (subscriptionVAS) {
-      return res.status(400).json(new ApiResponse(false, 400, "Subscription already active.", null));
+      return res.status(200).json(new ApiResponse(true, 200, "Subscription already active.", null));
     }
 
     subscriptionVAS = await SubscriptionVAS.findOne({
@@ -88,12 +88,12 @@ const deactivateSubscription = async (req, res) => {
 
     if (!subscriptionVAS.isActive) {
       const response = new ApiResponse(
-        false,
-        400,
+        true,
+        200,
         "Subscription already inactive",
         null
       );
-      return res.status(400).json(response);
+      return res.status(200).json(response);
     }
 
     subscriptionVAS.isActive = false;
@@ -101,11 +101,11 @@ const deactivateSubscription = async (req, res) => {
 
     const response = new ApiResponse(
       true,
-      200,
+      201,
       "Subscription deactivated successfully!",
       subscriptionVAS
     );
-    res.status(200).json(response);
+    res.status(201).json(response);
   } catch (error) {
     const response = new ApiResponse(
       false,

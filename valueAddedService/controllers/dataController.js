@@ -11,8 +11,7 @@ const calculateExpiryDate = (days) => {
 };
 
 const activateData = async (req, res) => {
-  const { accountID, dataAmount, price, durationInDays, packageID } =
-    req.body;
+  const { accountID, dataAmount, price, durationInDays, packageID } = req.body;
   try {
     const existingAccount = await checkExistingAccount(accountID);
 
@@ -24,7 +23,12 @@ const activateData = async (req, res) => {
     const isDataPackage = await DataPackages.findById(packageID);
 
     if (!isDataPackage) {
-      const response = new ApiResponse(false, 404, "Data package not found.", null);
+      const response = new ApiResponse(
+        false,
+        404,
+        "Data package not found.",
+        null
+      );
       return res.status(404).json(response);
     }
 
@@ -36,20 +40,18 @@ const activateData = async (req, res) => {
 
     if (isDataPackageActive) {
       const response = new ApiResponse(
-        false,
-        400,
+        true,
+        200,
         "Data package already active.",
         null
       );
-      return res.status(400).json(response);
+      return res.status(200).json(response);
     }
 
-
-
     const newData = new Data({
-      packageName : isDataPackage.name,
-      features : isDataPackage.features,
-      description : isDataPackage.description,
+      packageName: isDataPackage.name,
+      features: isDataPackage.features,
+      description: isDataPackage.description,
       accountID,
       dataAmount,
       packageID,
@@ -88,7 +90,7 @@ const deactivateData = async (req, res) => {
       const response = new ApiResponse(false, 404, "Account not found.", null);
       return res.status(404).json(response);
     }
-    const data = await Data.findOne({ accountID, packageID});
+    const data = await Data.findOne({ accountID, packageID });
 
     if (!data) {
       const response = new ApiResponse(
@@ -102,12 +104,12 @@ const deactivateData = async (req, res) => {
 
     if (!data.isActive) {
       const response = new ApiResponse(
-        false,
-        400,
+        true,
+        200,
         "Data package already inactive.",
         null
       );
-      return res.status(400).json(response);
+      return res.status(200).json(response);
     }
 
     data.isActive = false;
@@ -116,11 +118,11 @@ const deactivateData = async (req, res) => {
 
     const response = new ApiResponse(
       true,
-      200,
+      201,
       "Data package deactivated successfully!",
       data
     );
-    res.status(200).json(response);
+    res.status(201).json(response);
   } catch (error) {
     const response = new ApiResponse(
       false,
@@ -132,10 +134,50 @@ const deactivateData = async (req, res) => {
   }
 };
 
+const isDataPackageActive = async (req, res) => {
+  const { accountID, packageID } = req.body;
+
+  try {
+    const existingAccount = checkExistingAccount(accountID);
+
+    if (!existingAccount) {
+      const response = new ApiResponse(false, 404, "Account not found.", null);
+      return res.status(404).json(response);
+    }
+
+    const data = await Data.findOne({ accountID, packageID, isActive: true });
+
+    if (!data) {
+      const response = new ApiResponse(
+        false,
+        404,
+        "Data package is not active.",
+        null
+      );
+      return res.status(404).json(response);
+    }
+
+    const response = new ApiResponse(
+      true,
+      200,
+      "Data package is active.",
+      data
+    );
+    res.status(200).json(response);
+  } catch (error) {
+    const response = new ApiResponse(
+      false,
+      500,
+      "Server error while checking data package status.",
+      null
+    );
+    res.status(500).json(response);
+  }
+};
+
 const getAllActiveDataPackages = async (req, res) => {
   const { accountID } = req.params;
   try {
-    
     const dataPackages = await Data.find({ isActive: true, accountID });
     const response = new ApiResponse(
       true,
@@ -153,7 +195,6 @@ const getAllActiveDataPackages = async (req, res) => {
     );
     res.status(500).json(response);
   }
-
 };
 
-module.exports = { activateData, deactivateData, getAllActiveDataPackages };
+module.exports = { activateData, deactivateData, getAllActiveDataPackages, isDataPackageActive };
