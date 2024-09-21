@@ -5,7 +5,7 @@ const { decodeToken } = require('../functions/decodeToken');
 
 
 const activateRoaming = async (req, res) => {
-  const { email, accountID } = req.body;
+  const { accountID } = req.body;
 
   try {
     const existingAccount = checkExistingAccount(accountID);
@@ -55,7 +55,7 @@ const deactivateRoaming = async (req, res) => {
     roaming.deactivationDate = Date.now();
     await roaming.save();
 
-    const response = new ApiResponse(true, 200, "International roaming deactivated successfully!", roaming);
+    const response = new ApiResponse(true, 201, "International roaming deactivated successfully!", roaming);
     res.status(200).json(response);
 
   } catch (error) {
