@@ -5,7 +5,7 @@ const { checkExistingAccount } = require("../functions/checkExistingAccount");
 const { decodeToken } = require("../functions/decodeToken");
 
 const personalizeTone = async (req, res) => {
-  const { accountID, email, price, toneId, durationInDays } = req.body;
+  const { accountID, price, toneId, durationInDays } = req.body;
 
   try {
     const existingAccount = await checkExistingAccount(accountID);
@@ -36,7 +36,6 @@ const personalizeTone = async (req, res) => {
       packageName: isTone.name,
       packageName: isTone.toneDescription,
       accountID,
-      email,
       price,
       toneId,
       expiryDate: calculateExpiryDate(durationInDays),
