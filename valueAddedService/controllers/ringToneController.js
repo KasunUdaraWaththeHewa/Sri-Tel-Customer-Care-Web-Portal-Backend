@@ -14,6 +14,13 @@ const personalizeTone = async (req, res) => {
       return res.status(404).json(response);
     }
 
+    const isTone = await RingTone.findById(toneId);
+
+    if (!isTone) {
+      const response = new ApiResponse(false, 404, "Ring-tone not found.", null);
+      return res.status(404).json(response);
+    }
+
     await RingTone.updateMany(
       { accountID, isActive: true },
       { $set: { isActive: false } }
@@ -24,6 +31,7 @@ const personalizeTone = async (req, res) => {
       : null;
 
     const tone = new RingTone({
+      packageName: isTone.name,
       accountID,
       email,
       price,

@@ -47,6 +47,7 @@ const activateSubscription = async (req, res) => {
         : calculateExpiryDate(subscription.durationInDays || 30);
     } else {
       subscriptionVAS = new SubscriptionVAS({
+        packageName: subscription.name,
         accountID,
         email,
         subscriptionId,
