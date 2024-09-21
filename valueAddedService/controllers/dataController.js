@@ -33,8 +33,6 @@ const activateData = async (req, res) => {
       packageID,
       isActive: true,
     });
-  
-    console.log(isDataPackage);
 
     if (isDataPackageActive) {
       const response = new ApiResponse(
@@ -50,6 +48,8 @@ const activateData = async (req, res) => {
 
     const newData = new Data({
       packageName : isDataPackage.name,
+      features : isDataPackage.features,
+      description : isDataPackage.description,
       accountID,
       email,
       dataAmount,

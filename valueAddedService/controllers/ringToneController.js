@@ -1,8 +1,8 @@
 const RingTone = require("../models/RingTone");
+const ToneCatalog = require("../models/ToneCatelog");
 const ApiResponse = require("../dto/responseDto");
 const { checkExistingAccount } = require("../functions/checkExistingAccount");
 const { decodeToken } = require("../functions/decodeToken");
-
 
 const personalizeTone = async (req, res) => {
   const { accountID, email, price, toneId, durationInDays } = req.body;
@@ -15,10 +15,15 @@ const personalizeTone = async (req, res) => {
       return res.status(404).json(response);
     }
 
-    const isTone = await RingTone.findById(toneId);
+    const isTone = await ToneCatalog.findById(toneId);
 
     if (!isTone) {
-      const response = new ApiResponse(false, 404, "Ring-tone not found.", null);
+      const response = new ApiResponse(
+        false,
+        404,
+        "Ring-tone not found.",
+        null
+      );
       return res.status(404).json(response);
     }
 
@@ -27,14 +32,14 @@ const personalizeTone = async (req, res) => {
       { $set: { isActive: false } }
     );
 
-
     const tone = new RingTone({
       packageName: isTone.name,
+      packageName: isTone.toneDescription,
       accountID,
       email,
       price,
       toneId,
-      expiryDate : calculateExpiryDate(durationInDays),
+      expiryDate: calculateExpiryDate(durationInDays),
       isActive: true,
     });
 
@@ -84,7 +89,6 @@ const getAllActiveTones = async (req, res) => {
     );
     res.status(500).json(response);
   }
-}
-
+};
 
 module.exports = { personalizeTone, getAllActiveTones };

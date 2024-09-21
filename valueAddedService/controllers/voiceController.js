@@ -1,4 +1,5 @@
 const Voice = require("../models/Voice");
+const VoicePackage = require("../models/VoicePackages");
 const ApiResponse = require("../dto/responseDto");
 const { checkExistingAccount } = require("../functions/checkExistingAccount");
 const { decodeToken } = require('../functions/decodeToken'); 
@@ -20,9 +21,9 @@ const activateVoice = async (req, res) => {
       const response = new ApiResponse(false, 404, "Account not found.", null);
       return res.status(404).json(response);
     }
-
-    const isVoicePackage = await Voice.findById(packageID);
-
+    console.log(packageID);
+    const isVoicePackage = await VoicePackage.findById(packageID);
+    console.log(isVoicePackage);
     if (!isVoicePackage) {
       const response = new ApiResponse(false, 404, "Voice package not found.", null);
       return res.status(404).json(response);
@@ -48,6 +49,8 @@ const activateVoice = async (req, res) => {
 
     const newVoice = new Voice({
       packageName: isVoicePackage.name,
+      features: isVoicePackage.features,
+      description: isVoicePackage.description,
       accountID,
       email,
       voiceMinutes,

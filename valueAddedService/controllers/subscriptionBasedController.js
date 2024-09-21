@@ -48,6 +48,8 @@ const activateSubscription = async (req, res) => {
     } else {
       subscriptionVAS = new SubscriptionVAS({
         packageName: subscription.name,
+        features: subscription.features,
+        description: subscription.description,
         accountID,
         email,
         subscriptionId,
