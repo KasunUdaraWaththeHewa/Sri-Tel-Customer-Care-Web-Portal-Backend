@@ -5,7 +5,7 @@ const { checkExistingAccount } = require("../functions/checkExistingAccount");
 const { decodeToken } = require("../functions/decodeToken");
 
 const personalizeTone = async (req, res) => {
-  const { accountID, price, toneId, durationInDays } = req.body;
+  const { accountID, toneId, durationInDays } = req.body;
 
   try {
     const existingAccount = await checkExistingAccount(accountID);
@@ -36,7 +36,7 @@ const personalizeTone = async (req, res) => {
       packageName: isTone.name,
       packageName: isTone.toneDescription,
       accountID,
-      price,
+      price: isTone.price,
       toneId,
       expiryDate: calculateExpiryDate(durationInDays),
       isActive: true,
@@ -69,7 +69,7 @@ const calculateExpiryDate = (days) => {
 };
 
 const getAllActiveTones = async (req, res) => {
-  const { accountID } = req.params;
+  const { accountID } = req.body;
   try {
     const tones = await RingTone.find({ isActive: true, accountID });
     const response = new ApiResponse(
@@ -90,4 +90,39 @@ const getAllActiveTones = async (req, res) => {
   }
 };
 
-module.exports = { personalizeTone, getAllActiveTones };
+const deactivateTone = async (req, res) => {
+  const { accountID, toneId } = req.body;
+  try {
+    const tone = await RingTone.findOne({ accountID, toneId });
+    if (!tone) {
+      const response = new ApiResponse(
+        false,
+        404,
+        "Ring-back tone not found.",
+        null
+      );
+      return res.status(404).json(response);
+    }
+    const deactivatedRingTone = await RingTone.updateOne(
+      { accountID, toneId },
+      { $set: { isActive: false } }
+    );
+    const response = new ApiResponse(
+      true,
+      200,
+      "Ring-back tone deactivated successfully!",
+      deactivatedRingTone
+    );
+    res.status(200).json(response);
+  } catch (error) {
+    const response = new ApiResponse(
+      false,
+      500,
+      "Server error while deactivating ring-back tone.",
+      null
+    );
+    res.status(500).json(response);
+  }
+};
+
+module.exports = { personalizeTone, getAllActiveTones, deactivateTone };
