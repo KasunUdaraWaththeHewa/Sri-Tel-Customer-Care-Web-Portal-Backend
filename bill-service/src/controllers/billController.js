@@ -1,6 +1,7 @@
 const billService = require("../services/billService");
-const { decodeToken } = require("../functions/decodeToken");
 const axios = require("axios");
+const { decodeToken } = require("../functions/decodeToken");
+const { captureToken } = require("../functions/captureToken");
 
 // Create a new bill
 exports.createBill = async (req, res) => {
@@ -60,7 +61,10 @@ exports.recordPayment = async (req, res) => {
 // Get bill history for an account
 exports.getBillHistory = async (req, res) => {
   try {
-    const { accountId } = req.params;
+    const accountId = req.params.accountId;
+    // const token = captureToken(req);
+    // const accountId = decodeToken(token)._id;
+    // console.log(accountId);
     const bills = await billService.getBillHistory(accountId);
     res.status(200).json(bills);
   } catch (error) {

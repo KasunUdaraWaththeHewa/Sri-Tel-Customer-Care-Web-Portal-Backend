@@ -20,7 +20,7 @@ mongoose
   .catch((err) => console.log(err));
 
 // Routes
-app.use("/api/bills", billRoutes);
+app.use("/api/billing", billRoutes);
 
 // Initialize cron jobs
 startBillingCronJob();

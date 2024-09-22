@@ -60,7 +60,6 @@ services:
     environment:
       - PORT=4901
 
-
     # command: ["pnpm", "i" ]
     # entrypoint: ["pnpm", "dev"]
     entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
@@ -83,7 +82,6 @@ services:
     working_dir: /app
     environment:
       - PORT=4902
-
 
     # entrypoint: ["pnpm", "dev"]
     entrypoint: ["sh", "-c", "pnpm i && pnpm dev"]
@@ -273,7 +271,7 @@ services:
     environment:
       # - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - CORE_NOTIFICATION_SERVICE_URL=http://notification:4902/api
-      - CORE_BILLING_SERVICE_URL=http://billingservice:4903/api
+      - CORE_BILLING_SERVICE_URL=http://bill-service:4904/api
       - CORE_PAYMENT_SERVICE_URL=http://paymentservice:4904/api
       - CORE_CUSTOMER_SERVICE_URL=http://customerservice:4905/api
       - CORE_CHAT_SERVICE_URL=http://chatservice:4906/api
