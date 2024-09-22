@@ -6,12 +6,6 @@ const InternationalRoamingSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    email: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-    },
     roamingStatus: {
       type: Boolean,
       default: false, // true = active, false = inactive

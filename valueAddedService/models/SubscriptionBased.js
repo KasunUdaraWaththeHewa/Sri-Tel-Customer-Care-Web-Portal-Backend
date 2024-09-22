@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const SubscriptionVASchema = new mongoose.Schema(
   {
+    packageName: { type: String, required: true },
     accountID: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    email: {
-      type: String,
+    description: String,
+    features: {
+      type: Object,
       required: true,
-      trim: true,
-      lowercase: true,
     },
     subscriptionId: {
       type: mongoose.Schema.Types.ObjectId,
