@@ -244,6 +244,7 @@ userSchema.statics.resetPassword = async function (
 };
 
 const sendResetTokenEmail = (email, resetToken) => {
+  console.log("RESET TOKEN: ", resetToken);
   sendEmail({
     email,
     subject: "Password Reset Token",
